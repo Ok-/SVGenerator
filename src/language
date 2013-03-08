@@ -1,0 +1,20 @@
+image "titre" (height, width) {
+
+	////////////////
+	// Attributes
+	///////////////
+	description : "ma description";
+
+	////////////////////
+	// Types available
+	////////////////////
+	
+	point <center> : x, y;
+	couleur <rouge> : <255,0,0>;
+	circle <c> : <rayon>, <center>, <rouge>;
+	circle : xxx, Point(x,y), Couleur(r,v,b);
+	rectangle <sq> : <point1>, <point2>, <couleur>;
+	line <l> : <point1>, <point2>, <couleur>;
+	texte <t> : "ma_string";
+	
+} 
