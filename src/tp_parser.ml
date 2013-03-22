@@ -20,11 +20,12 @@ open Parsing;;
 # 2 "tp_parser.mly"
 open Fonctions;;
 
-let ref nom_image = "";
-let ref height = 0;
-let ref width = 0;
-let ref desc = "";
-# 28 "tp_parser.ml"
+let nom_image = ref "";;
+let height = ref 0;;
+let width = ref 0;;
+let desc = ref "";;
+let content = ref "";;
+# 29 "tp_parser.ml"
 let yytransl_const = [|
     0 (* EOF *);
   259 (* IMAGE *);
@@ -110,48 +111,48 @@ let yyact = [|
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : 'def_image) in
     Obj.repr(
-# 38 "tp_parser.mly"
+# 39 "tp_parser.mly"
                 (_1)
-# 116 "tp_parser.ml"
+# 117 "tp_parser.ml"
                : Fonctions.t_modules))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 4 : string) in
     let _3 = (Parsing.peek_val __caml_parser_env 3 : 'def_image_size) in
     let _5 = (Parsing.peek_val __caml_parser_env 1 : 'content) in
     Obj.repr(
-# 42 "tp_parser.mly"
+# 43 "tp_parser.mly"
                                                            (nom_image := _2; content := _5)
-# 125 "tp_parser.ml"
+# 126 "tp_parser.ml"
                : 'def_image))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 3 : string) in
     let _4 = (Parsing.peek_val __caml_parser_env 1 : string) in
     Obj.repr(
-# 46 "tp_parser.mly"
+# 47 "tp_parser.mly"
                                                  (width := _2; height := _4)
-# 133 "tp_parser.ml"
+# 134 "tp_parser.ml"
                : 'def_image_size))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : 'declaration) in
     Obj.repr(
-# 50 "tp_parser.mly"
+# 51 "tp_parser.mly"
                        (declaration := _1)
-# 140 "tp_parser.ml"
+# 141 "tp_parser.ml"
                : 'content))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 2 : 'declaration) in
     let _3 = (Parsing.peek_val __caml_parser_env 0 : 'content) in
     Obj.repr(
-# 51 "tp_parser.mly"
+# 52 "tp_parser.mly"
                                  (declaration := _1; declaration := _3)
-# 148 "tp_parser.ml"
+# 149 "tp_parser.ml"
                : 'content))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : string) in
     Obj.repr(
-# 55 "tp_parser.mly"
+# 56 "tp_parser.mly"
      ([_1])
-# 155 "tp_parser.ml"
+# 156 "tp_parser.ml"
                : 'declaration))
 (* Entry main *)
 ; (fun __caml_parser_env -> raise (Parsing.YYexit (Parsing.peek_val __caml_parser_env 0)))

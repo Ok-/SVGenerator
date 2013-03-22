@@ -1,10 +1,11 @@
 %{
 open Fonctions;;
 
-let ref nom_image = "";
-let ref height = 0;
-let ref width = 0;
-let ref desc = "";
+let nom_image = ref "";;
+let height = ref 0;;
+let width = ref 0;;
+let desc = ref "";;
+let content = ref "";;
 %}
 
 %token EOF
@@ -43,7 +44,7 @@ def_image:
 ;
 
 def_image_size:
-	LEFT_PARENTHESIS MOT COMA MOT RIGHT_PARENTHESIS {width := $2; height := $4}
+	LEFT_PARENTHESIS MOT COMA MOT RIGHT_PARENTHESIS {width := $2; height := $4; (width, height) }
 ;
 
 content:
