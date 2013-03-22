@@ -1,7 +1,7 @@
 type token =
   | EOF
   | MOT of (string)
-  | INTEGER
+  | INTEGER of (int)
   | IMAGE
   | BEGIN_BLOCK
   | END_BLOCK
@@ -17,17 +17,16 @@ type token =
   | RIGHT_PARENTHESIS
 
 open Parsing;;
-# 2 "parser.mly"
+# 2 "tp_parser.mly"
 open Fonctions;;
 
 let ref nom_image = "";
 let ref height = 0;
 let ref width = 0;
 let ref desc = "";
-# 28 "parser.ml"
+# 28 "tp_parser.ml"
 let yytransl_const = [|
     0 (* EOF *);
-  258 (* INTEGER *);
   259 (* IMAGE *);
   260 (* BEGIN_BLOCK *);
   261 (* END_BLOCK *);
@@ -45,6 +44,7 @@ let yytransl_const = [|
 
 let yytransl_block = [|
   257 (* MOT *);
+  258 (* INTEGER *);
     0|]
 
 let yylhs = "\255\255\
@@ -85,7 +85,6 @@ let yycheck = "\001\000\
 
 let yynames_const = "\
   EOF\000\
-  INTEGER\000\
   IMAGE\000\
   BEGIN_BLOCK\000\
   END_BLOCK\000\
@@ -103,6 +102,7 @@ let yynames_const = "\
 
 let yynames_block = "\
   MOT\000\
+  INTEGER\000\
   "
 
 let yyact = [|
@@ -110,48 +110,48 @@ let yyact = [|
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : 'def_image) in
     Obj.repr(
-# 38 "parser.mly"
+# 38 "tp_parser.mly"
                 (_1)
-# 116 "parser.ml"
-               : Interpret_func.t_expr list))
+# 116 "tp_parser.ml"
+               : Fonctions.t_modules))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 4 : string) in
     let _3 = (Parsing.peek_val __caml_parser_env 3 : 'def_image_size) in
     let _5 = (Parsing.peek_val __caml_parser_env 1 : 'content) in
     Obj.repr(
-# 42 "parser.mly"
-                                                           (nom_image := _2)
-# 125 "parser.ml"
+# 42 "tp_parser.mly"
+                                                           (nom_image := _2; content := _5)
+# 125 "tp_parser.ml"
                : 'def_image))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 3 : string) in
     let _4 = (Parsing.peek_val __caml_parser_env 1 : string) in
     Obj.repr(
-# 46 "parser.mly"
+# 46 "tp_parser.mly"
                                                  (width := _2; height := _4)
-# 133 "parser.ml"
+# 133 "tp_parser.ml"
                : 'def_image_size))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : 'declaration) in
     Obj.repr(
-# 50 "parser.mly"
-                       ()
-# 140 "parser.ml"
+# 50 "tp_parser.mly"
+                       (declaration := _1)
+# 140 "tp_parser.ml"
                : 'content))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 2 : 'declaration) in
     let _3 = (Parsing.peek_val __caml_parser_env 0 : 'content) in
     Obj.repr(
-# 51 "parser.mly"
-                                 ()
-# 148 "parser.ml"
+# 51 "tp_parser.mly"
+                                 (declaration := _1; declaration := _3)
+# 148 "tp_parser.ml"
                : 'content))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : string) in
     Obj.repr(
-# 55 "parser.mly"
-      ()
-# 155 "parser.ml"
+# 55 "tp_parser.mly"
+     ([_1])
+# 155 "tp_parser.ml"
                : 'declaration))
 (* Entry main *)
 ; (fun __caml_parser_env -> raise (Parsing.YYexit (Parsing.peek_val __caml_parser_env 0)))
@@ -174,4 +174,4 @@ let yytables =
     Parsing.names_const=yynames_const;
     Parsing.names_block=yynames_block }
 let main (lexfun : Lexing.lexbuf -> token) (lexbuf : Lexing.lexbuf) =
-   (Parsing.yyparse yytables 1 lexfun lexbuf : Interpret_func.t_expr list)
+   (Parsing.yyparse yytables 1 lexfun lexbuf : Fonctions.t_modules)

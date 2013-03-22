@@ -10,7 +10,7 @@ let ref desc = "";
 %token EOF
 
 %token <string> MOT
-%token INTEGER
+%token <int> INTEGER
 
 %token IMAGE
 %token BEGIN_BLOCK
@@ -29,7 +29,7 @@ let ref desc = "";
 %token RIGHT_PARENTHESIS
 
 %start main
-%type <Interpret_func.t_expr list> main
+%type <Fonctions.t_modules> main
 
 
 %%
@@ -39,7 +39,7 @@ main:
 ;
 
 def_image:
-    IMAGE MOT def_image_size BEGIN_BLOCK content END_BLOCK {nom_image := $2}
+    IMAGE MOT def_image_size BEGIN_BLOCK content END_BLOCK {nom_image := $2; content := $5}
 ;
 
 def_image_size:
@@ -47,10 +47,10 @@ def_image_size:
 ;
 
 content:
-	declaration SEMICOLON {}
-	| declaration SEMICOLON content {}
+	declaration SEMICOLON {declaration := $1}
+	| declaration SEMICOLON content {declaration := $1; declaration := $3}
 ;
 
 declaration:
-	MOT		{}
+	MOT {[$1]}
 ;

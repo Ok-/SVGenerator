@@ -1,7 +1,8 @@
-# 1 "lexer.mll"
+# 1 "tp_lexer.mll"
  
+ open Tp_parser;;
 
-# 5 "lexer.ml"
+# 6 "tp_lexer.ml"
 let __ocaml_lex_tables = {
   Lexing.lex_base = 
    "\000\000\245\255\078\000\088\000\248\255\249\255\250\255\251\255\
@@ -218,69 +219,69 @@ let rec token lexbuf =
 and __ocaml_lex_token_rec lexbuf __ocaml_lex_state =
   match Lexing.engine __ocaml_lex_tables __ocaml_lex_state lexbuf with
       | 0 ->
-# 8 "lexer.mll"
+# 9 "tp_lexer.mll"
            (comment lexbuf)
-# 224 "lexer.ml"
+# 225 "tp_lexer.ml"
 
   | 1 ->
-# 10 "lexer.mll"
-            (IMAGE lexbuf)
-# 229 "lexer.ml"
+# 11 "tp_lexer.mll"
+            (IMAGE)
+# 230 "tp_lexer.ml"
 
   | 2 ->
-# 11 "lexer.mll"
+# 12 "tp_lexer.mll"
          (BEGIN_BLOCK)
-# 234 "lexer.ml"
+# 235 "tp_lexer.ml"
 
   | 3 ->
-# 12 "lexer.mll"
+# 13 "tp_lexer.mll"
          (END_BLOCK)
-# 239 "lexer.ml"
+# 240 "tp_lexer.ml"
 
   | 4 ->
-# 13 "lexer.mll"
+# 14 "tp_lexer.mll"
          (LEFT_PARENTHESIS)
-# 244 "lexer.ml"
+# 245 "tp_lexer.ml"
 
   | 5 ->
-# 14 "lexer.mll"
+# 15 "tp_lexer.mll"
          (RIGHT_PARENTHESIS)
-# 249 "lexer.ml"
+# 250 "tp_lexer.ml"
 
   | 6 ->
-# 15 "lexer.mll"
+# 16 "tp_lexer.mll"
           (SEMICOLON)
-# 254 "lexer.ml"
+# 255 "tp_lexer.ml"
 
   | 7 ->
-# 16 "lexer.mll"
+# 17 "tp_lexer.mll"
          (COMA)
-# 259 "lexer.ml"
+# 260 "tp_lexer.ml"
 
   | 8 ->
 let
-# 19 "lexer.mll"
+# 20 "tp_lexer.mll"
             lxm
-# 265 "lexer.ml"
+# 266 "tp_lexer.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
-# 19 "lexer.mll"
+# 20 "tp_lexer.mll"
                 (MOT(lxm))
-# 269 "lexer.ml"
+# 270 "tp_lexer.ml"
 
   | 9 ->
 let
-# 20 "lexer.mll"
+# 21 "tp_lexer.mll"
                 lxi
-# 275 "lexer.ml"
+# 276 "tp_lexer.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
-# 20 "lexer.mll"
+# 21 "tp_lexer.mll"
                     (INTEGER(lxi))
-# 279 "lexer.ml"
+# 280 "tp_lexer.ml"
 
   | 10 ->
-# 24 "lexer.mll"
+# 25 "tp_lexer.mll"
           (print_endline "Fin de fichier" )
-# 284 "lexer.ml"
+# 285 "tp_lexer.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; __ocaml_lex_token_rec lexbuf __ocaml_lex_state
 
@@ -289,33 +290,21 @@ and comment lexbuf =
 and __ocaml_lex_comment_rec lexbuf __ocaml_lex_state =
   match Lexing.engine __ocaml_lex_tables __ocaml_lex_state lexbuf with
       | 0 ->
-# 27 "lexer.mll"
+# 28 "tp_lexer.mll"
            ( token lexbuf )
-# 295 "lexer.ml"
+# 296 "tp_lexer.ml"
 
   | 1 ->
-# 28 "lexer.mll"
+# 29 "tp_lexer.mll"
         ( comment lexbuf )
-# 300 "lexer.ml"
+# 301 "tp_lexer.ml"
 
   | 2 ->
-# 29 "lexer.mll"
+# 30 "tp_lexer.mll"
           ( print_endline "Fin de fichier" )
-# 305 "lexer.ml"
+# 306 "tp_lexer.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; __ocaml_lex_comment_rec lexbuf __ocaml_lex_state
 
 ;;
 
-# 33 "lexer.mll"
- 
-let _ =
-  if Array.length Sys.argv < 2
-    then print_endline "Donnez un nom de fichier en argument" else
-  let input_file = Sys.argv.(1) in
-  if not (Sys.file_exists input_file)
-    then print_endline "Ce fichier n'existe pas" else
-  let lexbuf = Lexing.from_channel (open_in input_file) in
-  token lexbuf;;
-
-# 322 "lexer.ml"

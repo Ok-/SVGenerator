@@ -1,7 +1,7 @@
 type token =
   | EOF
   | MOT of (string)
-  | INTEGER
+  | INTEGER of (int)
   | IMAGE
   | BEGIN_BLOCK
   | END_BLOCK
@@ -17,4 +17,4 @@ type token =
   | RIGHT_PARENTHESIS
 
 val main :
-  (Lexing.lexbuf  -> token) -> Lexing.lexbuf -> Interpret_func.t_expr list
+  (Lexing.lexbuf  -> token) -> Lexing.lexbuf -> Fonctions.t_modules
