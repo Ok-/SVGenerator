@@ -37,7 +37,7 @@ let content = ref "";;
 %%
 
 main:
-	IMAGE EOF {print_endline "main"}
+	def_image EOF {print_endline "MSG"; $1}
 ;
 
 def_image:
@@ -45,7 +45,7 @@ def_image:
 ;
 
 def_image_size:
-	LEFT_PARENTHESIS INTEGER COMA INTEGER RIGHT_PARENTHESIS {print_endline "size"; width := $2; height := $4; ($2, $4)}
+	LEFT_PARENTHESIS INTEGER COMA INTEGER RIGHT_PARENTHESIS {width := $2; height := $4; print_endline "lol" ; ($2, $4)}
 ;
 
 content:

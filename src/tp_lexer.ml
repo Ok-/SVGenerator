@@ -225,62 +225,62 @@ and __ocaml_lex_token_rec lexbuf __ocaml_lex_state =
 
   | 1 ->
 # 11 "tp_lexer.mll"
-            (IMAGE)
+            (print_endline "IMAGE"; IMAGE)
 # 230 "tp_lexer.ml"
 
   | 2 ->
 # 12 "tp_lexer.mll"
-         (BEGIN_BLOCK)
+         (print_endline "BEGIN"; BEGIN_BLOCK)
 # 235 "tp_lexer.ml"
 
   | 3 ->
 # 13 "tp_lexer.mll"
-         (END_BLOCK)
+         (print_endline "END"; END_BLOCK)
 # 240 "tp_lexer.ml"
 
   | 4 ->
 # 14 "tp_lexer.mll"
-         (LEFT_PARENTHESIS)
+         (print_endline "LEFT"; LEFT_PARENTHESIS)
 # 245 "tp_lexer.ml"
 
   | 5 ->
 # 15 "tp_lexer.mll"
-         (RIGHT_PARENTHESIS)
+         (print_endline "RIGHT"; RIGHT_PARENTHESIS)
 # 250 "tp_lexer.ml"
 
   | 6 ->
 # 16 "tp_lexer.mll"
-          (SEMICOLON)
+          (print_endline "SEMICOLON"; SEMICOLON)
 # 255 "tp_lexer.ml"
 
   | 7 ->
 # 17 "tp_lexer.mll"
-         (COMA)
+         (print_endline "COMA"; COMA)
 # 260 "tp_lexer.ml"
 
   | 8 ->
 let
-# 20 "tp_lexer.mll"
-            lxm
+# 19 "tp_lexer.mll"
+             lxm
 # 266 "tp_lexer.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
-# 20 "tp_lexer.mll"
-                (MOT(lxm))
+# 19 "tp_lexer.mll"
+                 (WORD(lxm))
 # 270 "tp_lexer.ml"
 
   | 9 ->
 let
-# 21 "tp_lexer.mll"
+# 20 "tp_lexer.mll"
                 lxi
 # 276 "tp_lexer.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
-# 21 "tp_lexer.mll"
+# 20 "tp_lexer.mll"
                     (INTEGER(lxi))
 # 280 "tp_lexer.ml"
 
   | 10 ->
-# 25 "tp_lexer.mll"
-          (print_endline "Fin de fichier" )
+# 22 "tp_lexer.mll"
+          (print_endline "End of file"; EOF)
 # 285 "tp_lexer.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; __ocaml_lex_token_rec lexbuf __ocaml_lex_state
@@ -290,18 +290,18 @@ and comment lexbuf =
 and __ocaml_lex_comment_rec lexbuf __ocaml_lex_state =
   match Lexing.engine __ocaml_lex_tables __ocaml_lex_state lexbuf with
       | 0 ->
-# 28 "tp_lexer.mll"
+# 25 "tp_lexer.mll"
            ( token lexbuf )
 # 296 "tp_lexer.ml"
 
   | 1 ->
-# 29 "tp_lexer.mll"
+# 26 "tp_lexer.mll"
         ( comment lexbuf )
 # 301 "tp_lexer.ml"
 
   | 2 ->
-# 30 "tp_lexer.mll"
-          ( print_endline "Fin de fichier" )
+# 27 "tp_lexer.mll"
+          ( print_endline "End of file"; EOF)
 # 306 "tp_lexer.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; __ocaml_lex_comment_rec lexbuf __ocaml_lex_state
