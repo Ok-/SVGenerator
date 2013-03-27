@@ -104,7 +104,7 @@ let yyact = [|
 ; (fun __caml_parser_env ->
     Obj.repr(
 # 40 "tp_parser.mly"
-           (print_endline "main")
+           (print_endline("main"))
 # 109 "tp_parser.ml"
                : unit))
 ; (fun __caml_parser_env ->

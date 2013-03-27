@@ -3,7 +3,8 @@
 }
 
 let word = ['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9']*
-let integer = ['0'-'9']*
+let integer = ['0'-'9']+
+let void = ['\n' ' ']
 
 rule token = parse
 	| "/*" 			{comment lexbuf}
@@ -16,8 +17,9 @@ rule token = parse
 	| ';' 			{print_endline "SEMICOLON"; SEMICOLON}
 	| ','			{print_endline "COMA"; COMA}
 	
+	| void			{token lexbuf}
   	| word as lxm {WORD(lxm)}
-  	| integer as lxi {INTEGER(lxi)}
+  	| integer as lxi {print_endline("pouetpouet");INTEGER(lxi)}
 	
 	| eof 			{print_endline "End of file"; EOF}	
 

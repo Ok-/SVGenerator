@@ -37,7 +37,7 @@ let content = ref "";;
 %%
 
 main:
-	IMAGE EOF {print_endline "main"}
+	def_image EOF {print_endline "MSG"; $1}
 ;
 
 def_image:
