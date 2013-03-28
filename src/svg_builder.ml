@@ -21,42 +21,39 @@ let rec end_root document =
 let rec add_node document node =
 	(node::[])::document;;
 		
-(* Add title node to document *)
+(* Add a title node to document *)
 let rec add_title document title =
 	let node = "  <title>"^title^"</title>" in
-		add_node document node;;		
+		add_node document node;;
 
-(* Print the xml document 
-let rec print_xml document =
-	if document = [] then print_endline "Doc vide"
-	else if tl(document) = [] then print_xml hd(document)
-	else if 
-*)
-(*
-let rec print_list2 liste =
-	if liste = [] then ()
-	else print_endline(hd(liste));
-		print_list2(tl(liste));;
-
-(* Print the xml document *)
-let rec print_list liste =
-	if liste = [] then ()
-	else print_list2( hd(liste));
-		 print_list(tl(liste));;
-*)
+(* Add a circle node to document *)
+(* TODO : manage color *)
+let rec add_circle(document, cx, cy, r) =
+	let node = "  <circle cx=\"" ^ cx ^ "\" cy=\"" ^ cy ^ "\" r=\"" ^ r ^ "\" fill=\"black\"/>" in
+		add_node document node;;
 
 
 (* Print document *)
-let rec print_list l =
+let rec print_xml l =
 	if l = [] then ()
 	else if tl(l) = [] then print_endline(hd(l))
 	else
 		print_endline(hd(l));
-		print_list(tl(l));;
- 
+		print_xml(tl(l));;
+		
+let rec print_list = function 
+[] -> ()
+| e::l -> print_string e ; print_string " " ; print_list l
+(*
 let rec print_list_of_list ll =
 	if ll = [] then ()
 	else if tl(ll) = [] then print_list(hd(ll))
 	else
 		print_list(hd(ll));
 		print_list_of_list(tl(ll));;
+*)
+
+(* 
+print_xml(rev(concat(document)));
+add_circle(document, string_of_int(cx), string_of_int(cy), string_of_int($5))
+*)

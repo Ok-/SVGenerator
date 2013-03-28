@@ -1,4 +1,4 @@
 image titre (300, 300) {
-	truc;
+	circle (dot(150,150), radius(50));
 }
 

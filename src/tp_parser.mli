@@ -5,12 +5,12 @@ type token =
   | IMAGE
   | BEGIN_BLOCK
   | END_BLOCK
-  | POINT
+  | DOT
   | RECTANGLE
   | CIRCLE
-  | COULEUR
   | LINE
   | TEXT
+  | RADIUS
   | SEMICOLON
   | COMA
   | LEFT_PARENTHESIS

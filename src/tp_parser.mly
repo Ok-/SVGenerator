@@ -1,10 +1,9 @@
 %{
 open Fonctions;;
+open String;;
 open List;;
 open Svg_builder;;
 
-let height = ref "";;
-let width = ref "";;
 let document = start_xml();;
 %}
 
@@ -17,12 +16,12 @@ let document = start_xml();;
 %token BEGIN_BLOCK
 %token END_BLOCK
 
-%token POINT
+%token DOT
 %token RECTANGLE
 %token CIRCLE
-%token COULEUR
 %token LINE
 %token TEXT
+%token RADIUS
 
 %token SEMICOLON
 %token COMA
@@ -46,13 +45,13 @@ def_image:
     		add_title document $2;
     		append $5 document;
     		end_root document;
-    		print_list_of_list document;
+    		print_list(rev(concat(document)));
     		print_endline $2
     }
 ;
 
 def_image_size:
-	LEFT_PARENTHESIS INTEGER COMA INTEGER RIGHT_PARENTHESIS {print_endline "size"; width := $2; height := $4; ($2, $4)}
+	LEFT_PARENTHESIS INTEGER COMA INTEGER RIGHT_PARENTHESIS {print_endline "size"; ($2, $4)}
 ;
 
 content:
@@ -65,5 +64,19 @@ image_name:
 ;
 
 declaration:
-	WORD {$1}
+	CIRCLE LEFT_PARENTHESIS dot COMA radius RIGHT_PARENTHESIS {
+		let (cx, cy) = $3 in 
+			print_endline cx;
+			print_endline cy;
+			print_endline $5;
+			cx
+	}
+;
+
+dot:
+	DOT LEFT_PARENTHESIS INTEGER COMA INTEGER RIGHT_PARENTHESIS {($3,$5)}
+;
+
+radius:
+	RADIUS LEFT_PARENTHESIS INTEGER RIGHT_PARENTHESIS {$3}
 ;

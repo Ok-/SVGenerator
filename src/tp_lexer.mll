@@ -10,6 +10,11 @@ rule token = parse
 	| "/*" 			{comment lexbuf}
 	
 	| "image"		{print_endline "IMAGE"; IMAGE}
+	| "dot"			{print_endline "DOT"; DOT}
+	| "circle"		{print_endline "CIRCLE"; CIRCLE}
+	| "rectangle"	{print_endline "RECTANGLE"; RECTANGLE}
+	| "radius"		{print_endline "RADIUS"; RADIUS}
+	
 	| "{"			{print_endline "BEGIN"; BEGIN_BLOCK}
 	| "}"			{print_endline "END"; END_BLOCK}
 	| "("			{print_endline "LEFT"; LEFT_PARENTHESIS}
