@@ -1,12 +1,11 @@
 %{
 open Fonctions;;
 open List;;
+open Svg_builder;;
 
-let nom_image = ref "";;
 let height = ref "";;
 let width = ref "";;
-let desc = ref "";;
-let content = ref "";;
+let document = start_xml();;
 %}
 
 %token EOF
@@ -37,11 +36,19 @@ let content = ref "";;
 %%
 
 main:
-	def_image EOF {print_endline "MSG"; $1}
+	def_image EOF {print_endline "Start"; $1}
 ;
 
 def_image:
-    IMAGE image_name def_image_size BEGIN_BLOCK content END_BLOCK {print_endline $2}
+    IMAGE image_name def_image_size BEGIN_BLOCK content END_BLOCK {
+    	let (w,h) = $3 in
+    		begin_root document w h;
+    		add_title document $2;
+    		append $5 document;
+    		end_root document;
+    		print_list_of_list document;
+    		print_endline $2
+    }
 ;
 
 def_image_size:
@@ -49,8 +56,8 @@ def_image_size:
 ;
 
 content:
-	declaration SEMICOLON {print_endline $1; [$1]}
-	| declaration SEMICOLON content {print_endline $1; $1::$3}
+	declaration SEMICOLON {add_node document $1}
+	| declaration SEMICOLON content {add_node document $1}
 ;
 
 image_name:

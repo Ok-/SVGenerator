@@ -1,2 +1,4 @@
-image
+image titre (300, 300) {
+	truc;
+}
 

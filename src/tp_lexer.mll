@@ -4,7 +4,7 @@
 
 let word = ['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9']*
 let integer = ['0'-'9']+
-let void = ['\n' ' ']
+let void = ['\n' ' ' '\t']
 
 rule token = parse
 	| "/*" 			{comment lexbuf}
@@ -19,7 +19,7 @@ rule token = parse
 	
 	| void			{token lexbuf}
   	| word as lxm {WORD(lxm)}
-  	| integer as lxi {print_endline("pouetpouet");INTEGER(lxi)}
+  	| integer as lxi {print_endline("nombre : "^lxi);INTEGER(lxi)}
 	
 	| eof 			{print_endline "End of file"; EOF}	
 
