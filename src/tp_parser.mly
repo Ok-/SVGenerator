@@ -41,12 +41,11 @@ main:
 def_image:
     IMAGE image_name def_image_size BEGIN_BLOCK content END_BLOCK {
     	let (w,h) = $3 in
-    		begin_root document w h;
-    		add_title document $2;
-    		append $5 document;
-    		end_root document;
-    		print_list(rev(concat(document)));
-    		print_endline $2
+    	let empty_document = begin_root(document, w, h) in
+    	let titled_document = add_title empty_document $2 in 
+    	let document_with_content = append $5 titled_document in
+    	let full_document = end_root document_with_content in
+    		print_list(rev(flatten(full_document)))
     }
 ;
 
@@ -55,8 +54,8 @@ def_image_size:
 ;
 
 content:
-	declaration SEMICOLON {add_node document $1}
-	| declaration SEMICOLON content {add_node document $1}
+	declaration SEMICOLON {add_node !document $1}
+	| declaration SEMICOLON content {add_node !document $1}
 ;
 
 image_name:
@@ -69,7 +68,7 @@ declaration:
 			print_endline cx;
 			print_endline cy;
 			print_endline $5;
-			cx
+			"test"
 	}
 ;
 

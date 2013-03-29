@@ -4,14 +4,14 @@ type xml = string list list;;
 
 (* Initialize xml doc *)
 let rec start_xml() = 
-	let node = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"::[]
+	let node = ["<?xml version=\"1.0\" encoding=\"utf-8\"?>"]
 	and document = [] in
 		node::document;;
 
 (* Build the beginning of the root node of the svg document *)
 let rec begin_root document w h =
 	let root = "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\""^w^"\" height=\""^h^"\">" in
-		(root::[])::document;;
+		[root]::document;;
 		
 (* Build the end of the root of the svg document *)
 let rec end_root document =
@@ -19,7 +19,7 @@ let rec end_root document =
 
 (* Add node to document *)
 let rec add_node document node =
-	(node::[])::document;;
+	[node]::document;;
 		
 (* Add a title node to document *)
 let rec add_title document title =
