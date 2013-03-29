@@ -4,7 +4,8 @@ open String;;
 open List;;
 open Svg_builder;;
 
-let document = start_xml [];;
+let empty_list = [];;
+let document = start_xml empty_list;;
 %}
 
 %token EOF
@@ -67,7 +68,11 @@ image_name:
 declaration:
 	CIRCLE LEFT_PARENTHESIS dot COMA radius RIGHT_PARENTHESIS {
 		let (cx, cy) = $3 and r = $5 in
-			add_circle [] cx cy r
+			add_circle empty_list cx cy r
+	}
+	| RECTANGLE LEFT_PARENTHESIS dot COMA dot RIGHT_PARENTHESIS {
+		let (cx_one, cy_one) = $3 and (cx_two, cy_two) = $5 in
+			add_rectangle empty_list cx_one cy_one cx_two cy_two
 	}
 ;
 

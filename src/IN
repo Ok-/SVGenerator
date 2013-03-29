@@ -1,5 +1,5 @@
 image titre (300, 300) {
 	circle (dot(150,150), radius(50));
-	circle (dot(150,150), radius(50));
+	rectangle (dot(50,50), dot(100,100));
 }
 

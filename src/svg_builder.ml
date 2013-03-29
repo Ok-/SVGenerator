@@ -33,6 +33,14 @@ let rec add_title document title =
 let rec add_circle document cx cy r =
 	let node = "  <circle cx=\"" ^ cx ^ "\" cy=\"" ^ cy ^ "\" r=\"" ^ r ^ "\" fill=\"black\"/>\n" in
 		add_node document node;;
+		
+(* Add a rectangle node to document *)
+(* TODO : manage color *)
+let rec add_rectangle document cx_one cy_one cx_two cy_two =
+	let w = abs(int_of_string(cx_two) - int_of_string(cx_one))
+	and h = abs(int_of_string(cy_two) - int_of_string(cy_one)) in
+		let node = "  <rect width=\"" ^ string_of_int(w) ^ "\" height=\"" ^ string_of_int(h) ^ "\" x=\"" ^ cx_one ^ "\" y=\"" ^ cy_one ^ "\" fill=\"black\"/>\n" in
+			add_node document node;;
 
 (* Concat xml nodes in a string *)
 let rec concat_xml xml =
