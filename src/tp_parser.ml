@@ -23,7 +23,7 @@ open String;;
 open List;;
 open Svg_builder;;
 
-let document = start_xml();;
+let document = start_xml [];;
 # 28 "tp_parser.ml"
 let yytransl_const = [|
     0 (* EOF *);
@@ -123,7 +123,7 @@ let yyact = [|
     let _1 = (Parsing.peek_val __caml_parser_env 1 : 'def_image) in
     Obj.repr(
 # 38 "tp_parser.mly"
-               (print_endline "Start"; _1)
+               (())
 # 128 "tp_parser.ml"
                : unit))
 ; (fun __caml_parser_env ->
@@ -134,11 +134,11 @@ let yyact = [|
 # 42 "tp_parser.mly"
                                                                   (
     	let (w,h) = _3 in
-    	let empty_document = begin_root(document, w, h) in
+    	let empty_document = begin_root document w h in
     	let titled_document = add_title empty_document _2 in 
-    	let document_with_content = append _5 titled_document in
+    	let document_with_content = _5 @ titled_document in
     	let full_document = end_root document_with_content in
-    		print_list(rev(flatten(full_document)))
+    		print_xml(rev(flatten(full_document)))
     )
 # 144 "tp_parser.ml"
                : 'def_image))
@@ -147,14 +147,14 @@ let yyact = [|
     let _4 = (Parsing.peek_val __caml_parser_env 1 : string) in
     Obj.repr(
 # 53 "tp_parser.mly"
-                                                         (print_endline "size"; (_2, _4))
+                                                         (_2, _4)
 # 152 "tp_parser.ml"
                : 'def_image_size))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : 'declaration) in
     Obj.repr(
 # 57 "tp_parser.mly"
-                       (add_node !document _1)
+                       (_1)
 # 159 "tp_parser.ml"
                : 'content))
 ; (fun __caml_parser_env ->
@@ -162,7 +162,7 @@ let yyact = [|
     let _3 = (Parsing.peek_val __caml_parser_env 0 : 'content) in
     Obj.repr(
 # 58 "tp_parser.mly"
-                                 (add_node !document _1)
+                                 (_1 @ _3)
 # 167 "tp_parser.ml"
                : 'content))
 ; (fun __caml_parser_env ->
@@ -178,28 +178,25 @@ let yyact = [|
     Obj.repr(
 # 66 "tp_parser.mly"
                                                            (
-		let (cx, cy) = _3 in 
-			print_endline cx;
-			print_endline cy;
-			print_endline _5;
-			"test"
+		let (cx, cy) = _3 and r = _5 in
+			add_circle [] cx cy r
 	)
-# 188 "tp_parser.ml"
+# 185 "tp_parser.ml"
                : 'declaration))
 ; (fun __caml_parser_env ->
     let _3 = (Parsing.peek_val __caml_parser_env 3 : string) in
     let _5 = (Parsing.peek_val __caml_parser_env 1 : string) in
     Obj.repr(
-# 76 "tp_parser.mly"
-                                                             ((_3,_5))
-# 196 "tp_parser.ml"
+# 73 "tp_parser.mly"
+                                                             (_3,_5)
+# 193 "tp_parser.ml"
                : 'dot))
 ; (fun __caml_parser_env ->
     let _3 = (Parsing.peek_val __caml_parser_env 1 : string) in
     Obj.repr(
-# 80 "tp_parser.mly"
+# 77 "tp_parser.mly"
                                                    (_3)
-# 203 "tp_parser.ml"
+# 200 "tp_parser.ml"
                : 'radius))
 (* Entry main *)
 ; (fun __caml_parser_env -> raise (Parsing.YYexit (Parsing.peek_val __caml_parser_env 0)))

@@ -20,5 +20,4 @@ let _ =
 	if not (Sys.file_exists input_file)
 	then print_endline "Ce fichier n'existe pas" else
 	let lexbuf = Lexing.from_channel (open_in input_file) in
-	let m = Tp_parser.main Tp_lexer.token lexbuf in
-	print_endline "test";;
+		Tp_parser.main Tp_lexer.token lexbuf;;
