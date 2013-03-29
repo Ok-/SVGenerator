@@ -48,6 +48,12 @@ let rec add_line document x_one y_one x_two y_two =
 	let node = "  <line x1=\"" ^ x_one ^ "\" y1=\"" ^ y_one ^ "\" x2=\"" ^ x_two ^ "\" y2=\"" ^ y_two ^ "\" stroke=\"black\"/>\n" in
 		add_node document node;;
 
+(* Add a line node to document *)
+(* TODO : manage color *)
+let rec add_text document text x y police size =
+	let node = "  <text x=\"" ^ x ^ "\" y=\"" ^ y ^ "\" font-family=\"" ^ police ^ "\" font-size=\"" ^ size ^ "\" stroke=\"black\">" ^ text ^ "</text>\n" in
+		add_node document node;;
+
 (* Concat xml nodes in a string *)
 let rec concat_xml xml =
 	if xml = [] then ""

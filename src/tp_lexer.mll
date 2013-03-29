@@ -14,6 +14,7 @@ rule token = parse
 	| "line"		{print_endline "LINE"; LINE}
 	| "circle"		{print_endline "CIRCLE"; CIRCLE}
 	| "rectangle"	{print_endline "RECTANGLE"; RECTANGLE}
+	| "text"		{print_endline "TEXT"; TEXT}
 	| "radius"		{print_endline "RADIUS"; RADIUS}
 	
 	| "{"			{print_endline "BEGIN"; BEGIN_BLOCK}

@@ -80,11 +80,20 @@ declaration:
 		let (x_one, y_one) = $3 and (x_two, y_two) = $5 in
 			add_line empty_list x_one y_one x_two y_two
 	}
+	
+	| TEXT WORD LEFT_PARENTHESIS dot text_optional RIGHT_PARENTHESIS {
+		let text = $2 and (x, y) = $4 and (police, size) = $5 in
+			add_text empty_list text x y police size
+	}
 ;
 
 dot:
 	DOT LEFT_PARENTHESIS INTEGER COMA INTEGER RIGHT_PARENTHESIS {$3,$5}
 ;
+
+text_optional:
+	COMA WORD COMA INTEGER {$2, $4}
+	| COMA INTEGER {"Verdana", $2}
 
 radius:
 	RADIUS LEFT_PARENTHESIS INTEGER RIGHT_PARENTHESIS {$3}
