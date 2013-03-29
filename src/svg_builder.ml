@@ -1,4 +1,7 @@
 open List;;
+open Printf;;
+
+let output_file = "output.svg";;
 
 (* type xml = string list list;; *)
 
@@ -31,8 +34,18 @@ let rec add_circle document cx cy r =
 	let node = "  <circle cx=\"" ^ cx ^ "\" cy=\"" ^ cy ^ "\" r=\"" ^ r ^ "\" fill=\"black\"/>\n" in
 		add_node document node;;
 
+(* Concat xml nodes in a string *)
+let rec concat_xml xml =
+	if xml = [] then ""
+	else hd(xml)^concat_xml(tl(xml))
 
 (* Print document *)
 let rec print_xml = function 
 [] -> ()
-| e::l -> print_string e ; print_string " " ; print_xml l
+| e::l -> print_string e ; print_xml l
+
+(* Write message to file *)
+let rec print_file xml =
+	let oc = open_out output_file in
+	fprintf oc "%s\n" xml;   
+	close_out oc;;

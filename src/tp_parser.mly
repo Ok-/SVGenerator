@@ -45,7 +45,9 @@ def_image:
     	let titled_document = add_title empty_document $2 in 
     	let document_with_content = $5 @ titled_document in
     	let full_document = end_root document_with_content in
-    		print_xml(rev(flatten(full_document)))
+    	let xml = rev(flatten(full_document)) in
+    		print_xml xml;
+    		print_file(concat_xml(xml))
     }
 ;
 
