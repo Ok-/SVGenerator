@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300" height="300">
   <title>titre</title>
-  <text x="20" y="200"  stroke="black">lol</text>
-  <text x="200" y="70" font-family="Verdana" font-size="30"  stroke="black">truc</text>
+  <text x="200" y="70" font-family="Verdana" font-size="40" fill="purple" stroke="pink" >truc</text>
   <line x1="0" y1="0" x2="300" y2="300" fill="grey" stroke="green" />
-  <rect width="50" height="50" x="50" y="50" fill="orange" stroke="blue" />
-  <circle cx="150" cy="150" r="50" fill="yellow" stroke="red" />
+  <rect width="50" height="50" x="50" y="50" fill="cyan" stroke="blue" />
+  <circle cx="150" cy="150" r="50" fill="orange" stroke="red" />
+  <circle cx="150" cy="150" r="20" fill="yellow" />
 </svg>
 

@@ -87,9 +87,9 @@ declaration:
 	}
 	
 	| TEXT WORD LEFT_PARENTHESIS text_options RIGHT_PARENTHESIS {
-		let text = $2 and (data, police, size) = $4 in
-		let (x, y) = data in 
-			add_text empty_list text x y police size
+		let text = $2 and (data_dot, police, size, color_data) = $4 in
+		let (x, y) = data_dot and (fill, stroke) = color_data in 
+			add_text empty_list text x y police size fill stroke
 	}
 ;
 
@@ -119,10 +119,14 @@ dot:
 ;
 
 text_options:
-	dot COMA WORD COMA INTEGER {$1, $3, int_of_string($5)}
-	| dot COMA INTEGER {$1, "", int_of_string($3)}
-	| dot COMA WORD {$1, $3, -1}
-	| dot {$1, "", -1}
+	dot COMA WORD COMA INTEGER COMA color {$1, $3, int_of_string($5), $7}
+	| dot COMA WORD COMA INTEGER {$1, $3, int_of_string($5), ("", "")}
+	| dot COMA INTEGER COMA color {$1, "", int_of_string($3), $5}
+	| dot COMA INTEGER {$1, "", int_of_string($3), ("", "")}
+	| dot COMA WORD COMA color {$1, $3, -1, $5}
+	| dot COMA WORD {$1, $3, -1, ("", "")}
+	| dot COMA color {$1, "", -1, $3}
+	| dot {$1, "", -1, ("", "")}
 
 radius:
 	RADIUS LEFT_PARENTHESIS INTEGER RIGHT_PARENTHESIS {$3}

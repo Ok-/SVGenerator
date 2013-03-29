@@ -76,14 +76,15 @@ let build_size_text_attribute size =
 	if size < 0 then ""
 	else "font-size=\"" ^ string_of_int(size) ^ "\" ";;
 
-(* Add a line node to document *)
+(* Add a text node to document *)
 (* TODO : manage color *)
-let rec add_text document text x y police size =
+let rec add_text document text x y police size fill stroke =
 	let node = "  <text x=\"" ^ x ^ "\" y=\"" ^ y ^ "\" "
 		^ build_police_attribute(police)
 		^ build_size_text_attribute(size)
-		^" stroke=\"black\">"
-		^ text ^ "</text>\n" in
+		^ build_fill_attribute(fill)
+		^ build_stroke_attribute(stroke)
+		^ ">" ^ text ^ "</text>\n" in
 			add_node document node;;
 
 (* Concat xml nodes in a string *)
