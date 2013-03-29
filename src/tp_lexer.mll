@@ -11,6 +11,8 @@ rule token = parse
 	
 	| "image"		{print_endline "IMAGE"; IMAGE}
 	| "dot"			{print_endline "DOT"; DOT}
+	| "fill"		{print_endline "FILL"; FILL}
+	| "stroke"		{print_endline "STROKE"; STROKE}
 	| "line"		{print_endline "LINE"; LINE}
 	| "circle"		{print_endline "CIRCLE"; CIRCLE}
 	| "rectangle"	{print_endline "RECTANGLE"; RECTANGLE}

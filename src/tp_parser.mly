@@ -18,6 +18,8 @@ let document = start_xml empty_list;;
 %token END_BLOCK
 
 %token DOT
+%token FILL
+%token STROKE
 %token RECTANGLE
 %token CIRCLE
 %token LINE
@@ -66,9 +68,10 @@ image_name:
 ;
 
 declaration:
-	CIRCLE LEFT_PARENTHESIS dot COMA radius RIGHT_PARENTHESIS {
-		let (cx, cy) = $3 and r = $5 in
-			add_circle empty_list cx cy r
+	CIRCLE LEFT_PARENTHESIS circle_data RIGHT_PARENTHESIS {
+		let (data_dot, r, data_circle) = $3 in
+		let (cx, cy) = data_dot and (fill, stroke) = data_circle in
+			add_circle empty_list cx cy r fill stroke
 	}
 	
 	| RECTANGLE LEFT_PARENTHESIS dot COMA dot RIGHT_PARENTHESIS {
@@ -86,6 +89,17 @@ declaration:
 		let (x, y) = data in 
 			add_text empty_list text x y police size
 	}
+;
+
+circle_data:
+	dot COMA radius COMA color {$1, $3, $5}
+	| dot COMA radius {$1, $3, ("", "")}
+;
+
+color:
+	FILL LEFT_PARENTHESIS WORD RIGHT_PARENTHESIS {$3, ""}
+	| STROKE LEFT_PARENTHESIS WORD RIGHT_PARENTHESIS {"", $3}
+	| FILL LEFT_PARENTHESIS WORD RIGHT_PARENTHESIS COMA STROKE LEFT_PARENTHESIS WORD RIGHT_PARENTHESIS {$3, $8}
 ;
 
 dot:

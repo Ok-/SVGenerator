@@ -5,6 +5,6 @@
   <text x="200" y="70" font-family="Verdana" font-size="30"  stroke="black">truc</text>
   <line x1="0" y1="0" x2="300" y2="300" stroke="black"/>
   <rect width="50" height="50" x="50" y="50" fill="black"/>
-  <circle cx="150" cy="150" r="50" fill="black"/>
+  <circle cx="150" cy="150" r="50" fill="yellow" stroke="red" />
 </svg>
 

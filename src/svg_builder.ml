@@ -28,10 +28,23 @@ let rec add_title document title =
 	let node = "  <title>"^title^"</title>\n" in
 		add_node document node;;
 
+(* Build police attribute for color *)
+let rec build_fill_attribute fill_color =
+	if fill_color = "" then ""
+	else "fill=\"" ^ fill_color ^ "\" ";;
+
+(* Build police attribute for color *)
+let rec build_stroke_attribute stroke_color =
+	if stroke_color = "" then ""
+	else "stroke=\"" ^ stroke_color ^ "\" ";;
+
 (* Add a circle node to document *)
 (* TODO : manage color *)
-let rec add_circle document cx cy r =
-	let node = "  <circle cx=\"" ^ cx ^ "\" cy=\"" ^ cy ^ "\" r=\"" ^ r ^ "\" fill=\"black\"/>\n" in
+let rec add_circle document cx cy r fill stroke =
+	let node = "  <circle cx=\"" ^ cx ^ "\" cy=\"" ^ cy ^ "\" r=\"" ^ r ^ "\" "
+	^ build_fill_attribute(fill)
+	^ build_stroke_attribute(stroke)
+	^ "/>\n" in
 		add_node document node;;
 		
 (* Add a rectangle node to document *)
