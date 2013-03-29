@@ -3,6 +3,6 @@ image titre (300, 300) {
 	rectangle (dot(50,50), dot(100,100));
 	line (dot(0,0), dot(300,300));
 	text truc (dot(200,70), Verdana, 30);
-	text lol (dot(20,200), 20);
+	text lol (dot(20,200));
 }
 

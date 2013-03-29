@@ -48,11 +48,25 @@ let rec add_line document x_one y_one x_two y_two =
 	let node = "  <line x1=\"" ^ x_one ^ "\" y1=\"" ^ y_one ^ "\" x2=\"" ^ x_two ^ "\" y2=\"" ^ y_two ^ "\" stroke=\"black\"/>\n" in
 		add_node document node;;
 
+(* Build police attribute for text node *)
+let build_police_attribute police =
+	if police = "" then ""
+	else "font-family=\"" ^ police ^ "\" ";;
+	
+(* Build size attribute for text node *)
+let build_size_text_attribute size =
+	if size < 0 then ""
+	else "font-size=\"" ^ string_of_int(size) ^ "\" ";;
+
 (* Add a line node to document *)
 (* TODO : manage color *)
 let rec add_text document text x y police size =
-	let node = "  <text x=\"" ^ x ^ "\" y=\"" ^ y ^ "\" font-family=\"" ^ police ^ "\" font-size=\"" ^ size ^ "\" stroke=\"black\">" ^ text ^ "</text>\n" in
-		add_node document node;;
+	let node = "  <text x=\"" ^ x ^ "\" y=\"" ^ y ^ "\" "
+		^ build_police_attribute(police)
+		^ build_size_text_attribute(size)
+		^" stroke=\"black\">"
+		^ text ^ "</text>\n" in
+			add_node document node;;
 
 (* Concat xml nodes in a string *)
 let rec concat_xml xml =
