@@ -74,14 +74,16 @@ declaration:
 			add_circle empty_list cx cy r fill stroke
 	}
 	
-	| RECTANGLE LEFT_PARENTHESIS dot COMA dot RIGHT_PARENTHESIS {
-		let (x_one, y_one) = $3 and (x_two, y_two) = $5 in
-			add_rectangle empty_list x_one y_one x_two y_two
+	| RECTANGLE LEFT_PARENTHESIS rectangle_data RIGHT_PARENTHESIS {
+		let (data_dot_one, data_dot_two, data_circle) = $3 in
+		let (x_one, y_one) = data_dot_one and (x_two, y_two) = data_dot_two and (fill, stroke) = data_circle in
+			add_rectangle empty_list x_one y_one x_two y_two fill stroke
 	}
 	
-	| LINE LEFT_PARENTHESIS dot COMA dot RIGHT_PARENTHESIS {
-		let (x_one, y_one) = $3 and (x_two, y_two) = $5 in
-			add_line empty_list x_one y_one x_two y_two
+	| LINE LEFT_PARENTHESIS line_data RIGHT_PARENTHESIS {
+		let (data_dot_one, data_dot_two, data_circle) = $3 in
+		let (x_one, y_one) = data_dot_one and (x_two, y_two) = data_dot_two and (fill, stroke) = data_circle in
+			add_line empty_list x_one y_one x_two y_two fill stroke
 	}
 	
 	| TEXT WORD LEFT_PARENTHESIS text_options RIGHT_PARENTHESIS {
@@ -91,9 +93,19 @@ declaration:
 	}
 ;
 
+line_data:
+	dot COMA dot COMA color {$1, $3, $5}
+	| dot COMA dot {$1, $3, ("", "")}
+;
+
 circle_data:
 	dot COMA radius COMA color {$1, $3, $5}
 	| dot COMA radius {$1, $3, ("", "")}
+;
+
+rectangle_data:
+	dot COMA dot COMA color {$1, $3, $5}
+	| dot COMA dot {$1, $3, ("", "")}
 ;
 
 color:

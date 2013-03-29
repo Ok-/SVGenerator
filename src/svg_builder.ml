@@ -48,17 +48,22 @@ let rec add_circle document cx cy r fill stroke =
 		add_node document node;;
 		
 (* Add a rectangle node to document *)
-(* TODO : manage color *)
-let rec add_rectangle document x_one y_one x_two y_two =
+let rec add_rectangle document x_one y_one x_two y_two fill stroke =
 	let w = abs(int_of_string(x_two) - int_of_string(x_one))
 	and h = abs(int_of_string(y_two) - int_of_string(y_one)) in
-		let node = "  <rect width=\"" ^ string_of_int(w) ^ "\" height=\"" ^ string_of_int(h) ^ "\" x=\"" ^ x_one ^ "\" y=\"" ^ y_one ^ "\" fill=\"black\"/>\n" in
+		let node = "  <rect width=\"" ^ string_of_int(w) ^ "\" height=\"" ^ string_of_int(h) ^ "\" x=\"" ^ x_one ^ "\" y=\"" ^ y_one ^ "\" "
+		^ build_fill_attribute(fill)
+		^ build_stroke_attribute(stroke)
+		^ "/>\n" in
 			add_node document node;;
 
 (* Add a line node to document *)
 (* TODO : manage color *)
-let rec add_line document x_one y_one x_two y_two =
-	let node = "  <line x1=\"" ^ x_one ^ "\" y1=\"" ^ y_one ^ "\" x2=\"" ^ x_two ^ "\" y2=\"" ^ y_two ^ "\" stroke=\"black\"/>\n" in
+let rec add_line document x_one y_one x_two y_two fill stroke =
+	let node = "  <line x1=\"" ^ x_one ^ "\" y1=\"" ^ y_one ^ "\" x2=\"" ^ x_two ^ "\" y2=\"" ^ y_two ^ "\" "
+	^ build_fill_attribute(fill)
+	^ build_stroke_attribute(stroke)
+	^ "/>\n" in
 		add_node document node;;
 
 (* Build police attribute for text node *)
