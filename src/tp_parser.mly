@@ -70,9 +70,15 @@ declaration:
 		let (cx, cy) = $3 and r = $5 in
 			add_circle empty_list cx cy r
 	}
+	
 	| RECTANGLE LEFT_PARENTHESIS dot COMA dot RIGHT_PARENTHESIS {
-		let (cx_one, cy_one) = $3 and (cx_two, cy_two) = $5 in
-			add_rectangle empty_list cx_one cy_one cx_two cy_two
+		let (x_one, y_one) = $3 and (x_two, y_two) = $5 in
+			add_rectangle empty_list x_one y_one x_two y_two
+	}
+	
+	| LINE LEFT_PARENTHESIS dot COMA dot RIGHT_PARENTHESIS {
+		let (x_one, y_one) = $3 and (x_two, y_two) = $5 in
+			add_line empty_list x_one y_one x_two y_two
 	}
 ;
 

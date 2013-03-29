@@ -36,11 +36,17 @@ let rec add_circle document cx cy r =
 		
 (* Add a rectangle node to document *)
 (* TODO : manage color *)
-let rec add_rectangle document cx_one cy_one cx_two cy_two =
-	let w = abs(int_of_string(cx_two) - int_of_string(cx_one))
-	and h = abs(int_of_string(cy_two) - int_of_string(cy_one)) in
-		let node = "  <rect width=\"" ^ string_of_int(w) ^ "\" height=\"" ^ string_of_int(h) ^ "\" x=\"" ^ cx_one ^ "\" y=\"" ^ cy_one ^ "\" fill=\"black\"/>\n" in
+let rec add_rectangle document x_one y_one x_two y_two =
+	let w = abs(int_of_string(x_two) - int_of_string(x_one))
+	and h = abs(int_of_string(y_two) - int_of_string(y_one)) in
+		let node = "  <rect width=\"" ^ string_of_int(w) ^ "\" height=\"" ^ string_of_int(h) ^ "\" x=\"" ^ x_one ^ "\" y=\"" ^ y_one ^ "\" fill=\"black\"/>\n" in
 			add_node document node;;
+
+(* Add a line node to document *)
+(* TODO : manage color *)
+let rec add_line document x_one y_one x_two y_two =
+	let node = "  <line x1=\"" ^ x_one ^ "\" y1=\"" ^ y_one ^ "\" x2=\"" ^ x_two ^ "\" y2=\"" ^ y_two ^ "\" stroke=\"black\"/>\n" in
+		add_node document node;;
 
 (* Concat xml nodes in a string *)
 let rec concat_xml xml =
