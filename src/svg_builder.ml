@@ -1,7 +1,6 @@
 open List;;
 open Printf;;
-
-let output_file = "output.svg";;
+open String;;
 
 (* type xml = string list list;; *)
 
@@ -118,8 +117,24 @@ let rec print_xml = function
 [] -> ()
 | e::l -> print_string e ; print_xml l
 
+(* Remove spaces from a string *)
+let rec trim str =
+	if str = "" then ""
+	else let search_pos init p next =
+	let rec search i =
+	if p i then raise(Failure "empty")
+	else match str.[i] with
+	| ' ' | '\n' | '\r' | '\t' -> search (next i)
+	| _ -> i in
+	search init in
+	let len = String.length str in
+	try
+	let left = search_pos 0 (fun i -> i >= len) (succ)
+	and right = search_pos (len - 1) (fun i -> i < 0) (pred) in
+    	String.sub str left (right - left + 1)   with   | Failure "empty" -> "" ;;
+
 (* Write message to file *)
-let rec print_file xml =
-	let oc = open_out output_file in
-	fprintf oc "%s\n" xml;   
+let rec print_file(xml_content,filename) =
+	let oc = open_out(trim(filename ^ ".svg")) in
+	fprintf oc "%s\n" xml_content;   
 	close_out oc;;

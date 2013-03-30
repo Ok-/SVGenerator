@@ -1,9 +1,20 @@
-image "Wonderful world" (500, 500) {
+image "Wonderful world" (500, 300) {
 	description ("And I think to myself, What a wonderful world!");
-	circle (dot(150,150), radius(20), fill(yellow));
-	circle (dot(150,150), radius(50), fill(orange), stroke(red));
-	rectangle (dot(50,50), dot(100,100), fill(cyan), stroke(blue)); //Awesome square!
 	line (dot(0,0), dot(300,300), fill(grey), stroke(green));
-	text lol (dot(200,70), Verdana, 40, fill(purple), stroke(pink));
-	polygon (dot(350,75), dot(379,161), dot(469,161), dot(397,215), dot(423,301), dot(350,250), dot(277,301), dot(303,215), dot(231,161), dot(321,161));
+	circle (dot(150,150), radius(50), fill(orange), stroke(red));
+	circle (dot(150,150), radius(20), fill(yellow));
+	rectangle (dot(50,50), dot(100,100), fill(cyan), stroke(blue)); //Awesome square!
+	text ("lol la couleur", dot(200,70), Verdana, 40, fill(purple), stroke(pink));
+	polygon (dot(350,74), dot(379,160), dot(469,160), dot(397,214), dot(423,300), dot(350,249), dot(277,300), dot(303,214), dot(231,160), dot(321,160));
+}
+
+image "icons" (300, 100) {
+	description ("Free icons!"); //Almost free cool stuff just for 5$!
+	circle (dot(50,50), radius(50), fill(green)); 
+	polygon (dot(35,30), dot(35,70), dot(75,50));
+	circle (dot(150,50), radius(50), fill(orange));
+	rectangle (dot(130,30), dot(145,70));
+	rectangle (dot(155,30), dot(170,70));
+	circle (dot(250,50), radius(50), fill(red));
+	rectangle (dot(230,30), dot(270,70));
 }

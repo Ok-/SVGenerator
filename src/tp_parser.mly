@@ -46,6 +46,7 @@ let document = start_xml empty_list;;
 
 main:
 	def_image EOF {()}
+	| def_image NEW_LINE def_image EOF {()}
 ;
 
 def_image:
@@ -53,12 +54,14 @@ def_image:
     	let (w,h) = $3 in
     	let empty_document = begin_root document w h in
     	let titled_document = add_title empty_document $2 in 
-    	let document_with_description = add_description titled_document $6 in
+    	let (description_str, comment_str) = $6 in
+    	let titled_document_with_comment = ([add_endline_comment(comment_str)] :: titled_document) in
+    	let document_with_description = add_description titled_document_with_comment description_str in
     	let document_with_content = rev($7) @ document_with_description in
     	let full_document = end_root document_with_content in
     	let xml = rev(flatten(full_document)) in
     		print_xml xml;
-    		print_file(concat_xml(xml))
+    		print_file(concat_xml(xml), $2)
     }
 ;
 
@@ -87,7 +90,8 @@ endline_comment:
 ;
 
 description:
-	DESCRIPTION LEFT_PARENTHESIS STRINGVALUE RIGHT_PARENTHESIS SEMICOLON NEW_LINE {$3}
+	DESCRIPTION LEFT_PARENTHESIS STRINGVALUE RIGHT_PARENTHESIS SEMICOLON endline_comment {$3, $6}
+	| DESCRIPTION LEFT_PARENTHESIS STRINGVALUE RIGHT_PARENTHESIS SEMICOLON {$3, ""}
 ;
 
 declaration:
@@ -109,8 +113,8 @@ declaration:
 			add_line empty_list x_one y_one x_two y_two fill stroke
 	}
 	
-	| TEXT WORD LEFT_PARENTHESIS text_options RIGHT_PARENTHESIS {
-		let text = $2 and (data_dot, police, size, color_data) = $4 in
+	| TEXT LEFT_PARENTHESIS STRINGVALUE COMA text_options RIGHT_PARENTHESIS {
+		let text = $3 and (data_dot, police, size, color_data) = $5 in
 		let (x, y) = data_dot and (fill, stroke) = color_data in 
 			add_text empty_list text x y police size fill stroke
 	}
@@ -123,7 +127,7 @@ declaration:
 ;
 
 polygon_data:
-	dot dots_list color {$1::$2, $3}
+	dot dots_list COMA color {$1::$2, $4}
 	| dot dots_list {$1::$2, ("", "")}
 ;
 
