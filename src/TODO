@@ -2,9 +2,7 @@
 |	TODO	|
 +-----------+
 
-1) String between "
-2) Endline comments
-3) Manage & print parsing errors
-4) Complex shapes (star, orthogon,...)
+1) Manage & print parsing errors
+2) Complex shapes (star, orthogon,...)
 
 See : http://www.w3.org/TR/SVG11/

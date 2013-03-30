@@ -13,6 +13,7 @@ let document = start_xml empty_list;;
 %token <string> WORD
 %token <string> INTEGER
 %token <string> STRINGVALUE
+%token <string> ENDLINE_COMMENT
 
 %token IMAGE
 %token BEGIN_BLOCK
@@ -20,19 +21,21 @@ let document = start_xml empty_list;;
 
 %token DOT
 %token DESCRIPTION
-%token FILL
-%token STROKE
 %token RECTANGLE
 %token CIRCLE
 %token LINE
 %token TEXT
 %token RADIUS
+%token FILL
+%token STROKE
 
 %token SEMICOLON
 %token COMA
 %token QUOTE
 %token LEFT_PARENTHESIS
 %token RIGHT_PARENTHESIS
+%token SINGLE_LINE_COMMENT
+%token NEW_LINE
 
 %start main
 %type <unit> main
@@ -45,12 +48,12 @@ main:
 ;
 
 def_image:
-    IMAGE image_name def_image_size BEGIN_BLOCK description content END_BLOCK {
+    IMAGE image_name def_image_size BEGIN_BLOCK NEW_LINE description content NEW_LINE {
     	let (w,h) = $3 in
     	let empty_document = begin_root document w h in
     	let titled_document = add_title empty_document $2 in 
-    	let document_with_description = add_description titled_document $5 in
-    	let document_with_content = $6 @ document_with_description in
+    	let document_with_description = add_description titled_document $6 in
+    	let document_with_content = rev($7) @ document_with_description in
     	let full_document = end_root document_with_content in
     	let xml = rev(flatten(full_document)) in
     		print_xml xml;
@@ -67,16 +70,23 @@ def_image_size:
 ;
 
 content:
-	declaration SEMICOLON {$1}
-	| declaration SEMICOLON content {$1 @ $3}
+	declaration SEMICOLON endline_comment {
+		[add_endline_comment($3)] :: $1
+	}
+	
+	| declaration SEMICOLON endline_comment content {
+		let lst = ([add_endline_comment($3)] :: $1) in
+			lst @ $4
+	}
 ;
 
-image_name:
-	WORD {$1}
+endline_comment:
+	| ENDLINE_COMMENT {$1}
+	| NEW_LINE {""}
 ;
 
 description:
-	DESCRIPTION LEFT_PARENTHESIS STRINGVALUE RIGHT_PARENTHESIS SEMICOLON {$3}
+	DESCRIPTION LEFT_PARENTHESIS STRINGVALUE RIGHT_PARENTHESIS SEMICOLON NEW_LINE {$3}
 ;
 
 declaration:

@@ -89,6 +89,11 @@ let rec add_text document text x y police size fill stroke =
 		^ ">" ^ text ^ "</text>\n" in
 			add_node document node;;
 
+(* Build comment node in the document *)
+let rec add_endline_comment comment =
+	if comment = "" then ""
+	else "  <!-- " ^ comment ^ " -->\n"
+
 (* Concat xml nodes in a string *)
 let rec concat_xml xml =
 	if xml = [] then ""

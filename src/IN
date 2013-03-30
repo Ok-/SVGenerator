@@ -2,8 +2,7 @@ image "Wonderful world" (300, 300) {
 	description ("And I think to myself, What a wonderful world!");
 	circle (dot(150,150), radius(20), fill(yellow));
 	circle (dot(150,150), radius(50), fill(orange), stroke(red));
-	rectangle (dot(50,50), dot(100,100), fill(cyan), stroke(blue));
+	rectangle (dot(50,50), dot(100,100), fill(cyan), stroke(blue)); // ceci est un test
 	line (dot(0,0), dot(300,300), fill(grey), stroke(green));
-	text lol (dot(200,70), Verdana, 40, fill(purple), stroke(pink));
+	text lol (dot(200,70), Verdana, 40, fill(purple), stroke(pink));//un autre test
 }
-
