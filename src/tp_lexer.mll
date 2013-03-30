@@ -3,6 +3,10 @@
 	
 	let str_buffer = ref "";;
 	let single_comment = ref "";;
+	
+	(* Element for parsing errors *)
+	let invalid_token = ref ' ';;
+	let line = ref 0;;
 }
 
 let word = ['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9']*
@@ -10,6 +14,7 @@ let integer = ['0'-'9']+
 let endline = ['\n']
 let void = [' ' '\t']
 let str_value = [^ '"' '\n']*
+let other_token = [^ '"' ' ' '\t' '\n']*
 
 rule token = parse
 	| "/*" 				{multiline_comment lexbuf}
@@ -24,6 +29,7 @@ rule token = parse
 	| "circle"			{print_endline "CIRCLE"; CIRCLE}
 	| "rectangle"		{print_endline "RECTANGLE"; RECTANGLE}
 	| "text"			{print_endline "TEXT"; TEXT}
+	| "polygon"			{print_endline "POLYGON"; POLYGON}
 	| "radius"			{print_endline "RADIUS"; RADIUS}
 	
 	| "{"				{print_endline "BEGIN"; BEGIN_BLOCK}
@@ -35,9 +41,10 @@ rule token = parse
 	| '"'				{quoted_string lexbuf}
 	
 	| void				{token lexbuf}
-	| endline			{print_endline "NEW_LINE"; NEW_LINE}
+	| endline			{line:=!line + 1; print_endline "NEW_LINE"; NEW_LINE}
   	| word as lxm 		{WORD(lxm)}
   	| integer as lxi 	{print_endline("nombre : "^lxi);INTEGER(lxi)}
+	| _ as err 			{invalid_token := err; syntax_error lexbuf}
 	
 	| eof 				{print_endline "End of file"; EOF}
 
@@ -56,5 +63,11 @@ and multiline_comment = parse
 	| "*/" 				{token lexbuf}
 	| _ 				{multiline_comment lexbuf}
 	| eof 				{print_endline "End of file"; EOF}
-  
+
+and syntax_error = parse
+	| other_token as lxm	{
+		print_endline("Syntax error at token '" ^ String.make 1 !invalid_token ^ lxm ^ "' line " ^ string_of_int(!line+1));
+		token lexbuf
+	}
+
 {}

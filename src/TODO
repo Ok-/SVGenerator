@@ -2,7 +2,9 @@
 |	TODO	|
 +-----------+
 
-1) Manage & print parsing errors
-2) Complex shapes (star, orthogon,...)
+1) Fix polygon colors
+2) Use quotes for text
+3) Complex shapes (curves,...)
+
 
 See : http://www.w3.org/TR/SVG11/

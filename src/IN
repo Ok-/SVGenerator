@@ -1,8 +1,9 @@
-image "Wonderful world" (300, 300) {
+image "Wonderful world" (500, 500) {
 	description ("And I think to myself, What a wonderful world!");
 	circle (dot(150,150), radius(20), fill(yellow));
 	circle (dot(150,150), radius(50), fill(orange), stroke(red));
-	rectangle (dot(50,50), dot(100,100), fill(cyan), stroke(blue)); // ceci est un test
+	rectangle (dot(50,50), dot(100,100), fill(cyan), stroke(blue)); //Awesome square!
 	line (dot(0,0), dot(300,300), fill(grey), stroke(green));
-	text lol (dot(200,70), Verdana, 40, fill(purple), stroke(pink));//un autre test
+	text lol (dot(200,70), Verdana, 40, fill(purple), stroke(pink));
+	polygon (dot(350,75), dot(379,161), dot(469,161), dot(397,215), dot(423,301), dot(350,250), dot(277,301), dot(303,215), dot(231,161), dot(321,161));
 }

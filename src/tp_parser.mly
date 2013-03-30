@@ -25,6 +25,7 @@ let document = start_xml empty_list;;
 %token CIRCLE
 %token LINE
 %token TEXT
+%token POLYGON
 %token RADIUS
 %token FILL
 %token STROKE
@@ -113,7 +114,22 @@ declaration:
 		let (x, y) = data_dot and (fill, stroke) = color_data in 
 			add_text empty_list text x y police size fill stroke
 	}
+	
+	| POLYGON LEFT_PARENTHESIS polygon_data RIGHT_PARENTHESIS {
+		let (dots, color_data) = $3 in
+		let (fill, stroke) = color_data in
+			add_polygon empty_list dots fill stroke
+	}
 ;
+
+polygon_data:
+	dot dots_list color {$1::$2, $3}
+	| dot dots_list {$1::$2, ("", "")}
+;
+
+dots_list:
+	COMA dot dots_list {$2::$3}
+	| COMA dot {[$2]}
 
 line_data:
 	dot COMA dot COMA color {$1, $3, $5}

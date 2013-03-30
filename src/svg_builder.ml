@@ -69,6 +69,20 @@ let rec add_line document x_one y_one x_two y_two fill stroke =
 	^ "/>\n" in
 		add_node document node;;
 
+(* Build points attribute for polygon node *)
+let rec build_dots dots = 
+	if dots = [] then ""
+	else let (x,y) = hd(dots) in
+		" " ^ x ^ "," ^ y ^ " " ^ build_dots(tl(dots));;
+
+(* Add a polygon node to document *)
+let rec add_polygon document dots fill stroke =
+	let node = "  <polygon points=\"" ^ build_dots dots ^ "\" "
+	^ build_fill_attribute(fill)
+	^ build_stroke_attribute(stroke)
+	^ "/>\n" in
+		add_node document node;;
+
 (* Build police attribute for text node *)
 let build_police_attribute police =
 	if police = "" then ""
