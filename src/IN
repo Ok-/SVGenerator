@@ -1,4 +1,5 @@
-image titre (300, 300) {
+image "Wonderful world" (300, 300) {
+	description ("And I think to myself, What a wonderful world!");
 	circle (dot(150,150), radius(20), fill(yellow));
 	circle (dot(150,150), radius(50), fill(orange), stroke(red));
 	rectangle (dot(50,50), dot(100,100), fill(cyan), stroke(blue));

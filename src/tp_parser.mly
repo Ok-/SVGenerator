@@ -12,12 +12,14 @@ let document = start_xml empty_list;;
 
 %token <string> WORD
 %token <string> INTEGER
+%token <string> STRINGVALUE
 
 %token IMAGE
 %token BEGIN_BLOCK
 %token END_BLOCK
 
 %token DOT
+%token DESCRIPTION
 %token FILL
 %token STROKE
 %token RECTANGLE
@@ -28,6 +30,7 @@ let document = start_xml empty_list;;
 
 %token SEMICOLON
 %token COMA
+%token QUOTE
 %token LEFT_PARENTHESIS
 %token RIGHT_PARENTHESIS
 
@@ -42,16 +45,21 @@ main:
 ;
 
 def_image:
-    IMAGE image_name def_image_size BEGIN_BLOCK content END_BLOCK {
+    IMAGE image_name def_image_size BEGIN_BLOCK description content END_BLOCK {
     	let (w,h) = $3 in
     	let empty_document = begin_root document w h in
     	let titled_document = add_title empty_document $2 in 
-    	let document_with_content = $5 @ titled_document in
+    	let document_with_description = add_description titled_document $5 in
+    	let document_with_content = $6 @ document_with_description in
     	let full_document = end_root document_with_content in
     	let xml = rev(flatten(full_document)) in
     		print_xml xml;
     		print_file(concat_xml(xml))
     }
+;
+
+image_name:
+	STRINGVALUE {$1}
 ;
 
 def_image_size:
@@ -65,6 +73,10 @@ content:
 
 image_name:
 	WORD {$1}
+;
+
+description:
+	DESCRIPTION LEFT_PARENTHESIS STRINGVALUE RIGHT_PARENTHESIS SEMICOLON {$3}
 ;
 
 declaration:

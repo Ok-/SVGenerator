@@ -25,7 +25,12 @@ let rec add_node document node =
 		
 (* Add a title node to document *)
 let rec add_title document title =
-	let node = "  <title>"^title^"</title>\n" in
+	let node = "  <title>" ^ title ^ "</title>\n" in
+		add_node document node;;
+		
+(* Add a description node to document *)
+let rec add_description document description =
+	let node = "  <desc>" ^ description ^ "</desc>\n" in
 		add_node document node;;
 
 (* Build police attribute for color *)
@@ -39,7 +44,6 @@ let rec build_stroke_attribute stroke_color =
 	else "stroke=\"" ^ stroke_color ^ "\" ";;
 
 (* Add a circle node to document *)
-(* TODO : manage color *)
 let rec add_circle document cx cy r fill stroke =
 	let node = "  <circle cx=\"" ^ cx ^ "\" cy=\"" ^ cy ^ "\" r=\"" ^ r ^ "\" "
 	^ build_fill_attribute(fill)
@@ -58,7 +62,6 @@ let rec add_rectangle document x_one y_one x_two y_two fill stroke =
 			add_node document node;;
 
 (* Add a line node to document *)
-(* TODO : manage color *)
 let rec add_line document x_one y_one x_two y_two fill stroke =
 	let node = "  <line x1=\"" ^ x_one ^ "\" y1=\"" ^ y_one ^ "\" x2=\"" ^ x_two ^ "\" y2=\"" ^ y_two ^ "\" "
 	^ build_fill_attribute(fill)
@@ -77,7 +80,6 @@ let build_size_text_attribute size =
 	else "font-size=\"" ^ string_of_int(size) ^ "\" ";;
 
 (* Add a text node to document *)
-(* TODO : manage color *)
 let rec add_text document text x y police size fill stroke =
 	let node = "  <text x=\"" ^ x ^ "\" y=\"" ^ y ^ "\" "
 		^ build_police_attribute(police)
