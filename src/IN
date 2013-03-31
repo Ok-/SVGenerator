@@ -9,7 +9,7 @@ image "Wonderful world" (500, 300) {
 }
 
 image "icons" (300, 100) {
-	description ("Free icons!"); //Almost free cool stuff just for 5$!
+	description ("Free icons!"); //Almost free, cool stuff just for 5$!
 	circle (dot(50,50), radius(50), fill(green)); 
 	polygon (dot(35,30), dot(35,70), dot(75,50));
 	circle (dot(150,50), radius(50), fill(orange));

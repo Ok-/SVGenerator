@@ -127,13 +127,20 @@ declaration:
 ;
 
 polygon_data:
-	dot dots_list COMA color {$1::$2, $4}
-	| dot dots_list {$1::$2, ("", "")}
+	dot dots_list {
+		let (dots_list, color) = $2 in
+			(($1::dots_list), color)
+	}
 ;
 
-dots_list:
-	COMA dot dots_list {$2::$3}
-	| COMA dot {[$2]}
+dots_list: //$2::$3, ("", "")
+	COMA dot dots_list {
+		let (dots_list, color) = $3 in
+			(($2::dots_list), color)
+	}
+	
+	| COMA dot {[$2], ("", "")}
+	| COMA dot COMA color {[$2], $4}
 
 line_data:
 	dot COMA dot COMA color {$1, $3, $5}
@@ -154,6 +161,7 @@ color:
 	FILL LEFT_PARENTHESIS WORD RIGHT_PARENTHESIS {$3, ""}
 	| STROKE LEFT_PARENTHESIS WORD RIGHT_PARENTHESIS {"", $3}
 	| FILL LEFT_PARENTHESIS WORD RIGHT_PARENTHESIS COMA STROKE LEFT_PARENTHESIS WORD RIGHT_PARENTHESIS {$3, $8}
+	| STROKE LEFT_PARENTHESIS WORD RIGHT_PARENTHESIS COMA FILL LEFT_PARENTHESIS WORD RIGHT_PARENTHESIS {$8, $3}
 ;
 
 dot:
