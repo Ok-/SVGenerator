@@ -5,7 +5,7 @@ image "Wonderful world" (500, 300) {
 	circle (dot(150,150), radius(20), fill(yellow));
 	rectangle (dot(50,50), dot(100,100), fill(cyan), stroke(blue)); //Awesome square!
 	text ("lol la couleur", dot(200,70), Verdana, 40, fill(purple), stroke(pink));
-	polygon (dot(350,74), dot(379,160), dot(469,160), dot(397,214), dot(423,300), dot(350,249), dot(277,300), dot(303,214), dot(231,160), dot(321,160));
+	polygon (dot(350,74), dot(379,160), dot(469,160), dot(397,214), dot(423,300), dot(350,249), dot(277,300), dot(303,214), dot(231,160), dot(321,160), fill(gold));
 }
 
 image "icons" (300, 100) {

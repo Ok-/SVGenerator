@@ -20,4 +20,4 @@ clean:
 	rm -rf tp_lexer.ml tp_parser.ml
 	rm -f $(EXEC)
 	rm -f $(EXEC).opt
-	rm -f output.svg
+	rm -f *.svg
