@@ -5,11 +5,15 @@ image "Wonderful world" (500, 300) {
 	dot d2 := (300,300);
 	dot d3 := (50,50);
 	dot d4 := (100,100);
+	dot d5 := (200,70);
 	integer r := 50;
+	integer t := 40;
 	circle c1 := (center, r, fill(orange), stroke(red));
 	line l1 := (d1, d2, fill(grey), stroke(green));
 	rectangle r1 := (d3, d4, fill(grey), stroke(green));
+	text t1 := ("Test", d5, t, fill(purple), stroke(pink));
 	draw c1;
 	draw l1;
 	draw r1;
+	draw t1;
 }

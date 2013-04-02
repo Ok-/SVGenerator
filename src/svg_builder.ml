@@ -30,7 +30,7 @@ let rec get_dot_values symbol_table symbol_name =
 			(hd position), (nth position 1));;
 
 (* Get radius value *)
-let rec get_radius_value symbol_table symbol_name =
+let rec get_int_value symbol_table symbol_name =
 	let dot_data = assoc symbol_name symbol_table in
 		let position = hd(tl(dot_data)) in
 			(print_list position;
@@ -126,11 +126,6 @@ let rec add_polygon document dots fill stroke =
 	^ build_stroke_attribute(stroke)
 	^ "/>\n" in
 		add_node document node;;
-
-(* Build police attribute for text node *)
-let build_police_attribute police =
-	if police = "" then ""
-	else "font-family=\"" ^ police ^ "\" ";;
 	
 (* Build size attribute for text node *)
 let build_size_text_attribute size =
@@ -138,14 +133,17 @@ let build_size_text_attribute size =
 	else "font-size=\"" ^ string_of_int(size) ^ "\" ";;
 
 (* Add a text node to document *)
-let rec add_text document text x y police size fill stroke =
-	let node = "  <text x=\"" ^ x ^ "\" y=\"" ^ y ^ "\" "
-		^ build_police_attribute(police)
-		^ build_size_text_attribute(size)
-		^ build_fill_attribute(fill)
-		^ build_stroke_attribute(stroke)
-		^ ">" ^ text ^ "</text>\n" in
-			add_node document node;;
+let rec add_text document text_data fill stroke =
+	let text = (hd text_data)
+	and x = (nth text_data 1)
+	and y = (nth text_data 2)
+	and size = (nth text_data 3) in
+		let node = "  <text x=\"" ^ x ^ "\" y=\"" ^ y ^ "\" "
+			^ build_size_text_attribute(int_of_string(size))
+			^ build_fill_attribute(fill)
+			^ build_stroke_attribute(stroke)
+			^ ">" ^ text ^ "</text>\n" in
+				add_node document node;;
 
 (* Build comment node in the document *)
 let rec add_endline_comment comment =

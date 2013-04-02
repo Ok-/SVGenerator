@@ -136,13 +136,22 @@ declaration:
 			[]
 	}
 	
+	| TEXT WORD ASSIGNMENT LEFT_PARENTHESIS STRINGVALUE COMA text_options RIGHT_PARENTHESIS { 
+		let (data_dot, size, color) = $7 in
+		let (x, y) = data_dot
+		and (fill, stroke) = color in
+			symbol_table := add_symbol !symbol_table $2 "text" [$5; x; y; string_of_int(size)];
+			[]
+	}
+	
 	| DRAW WORD {
 		let element = assoc $2 !symbol_table in
 			let symbol_type = hd(hd(element)) and symbol_data = hd(tl(element)) in
 				match symbol_type with
-				| "circle"		-> (add_circle empty_list symbol_data "" "")
 				| "line" 		-> (add_line empty_list symbol_data "" "")
+				| "circle"		-> (add_circle empty_list symbol_data "" "")
 				| "rectangle" 	-> (add_rectangle empty_list symbol_data "" "")
+				| "text" 		-> (add_text empty_list symbol_data "" "")
 				| _ -> (print_endline "Nothing to draw."; [])
 				
 	}
@@ -181,12 +190,13 @@ line_data:
 circle_data:
 	WORD COMA WORD COMA color {
 		let position = get_dot_values !symbol_table $1 
-		and r = get_radius_value !symbol_table $3 in
+		and r = get_int_value !symbol_table $3 in
 			position, r, $5
 	}
-	| WORD COMA radius {
-		let position = get_dot_values !symbol_table $1 in
-			position, $3, ("", "")
+	| WORD COMA WORD {
+		let position = get_dot_values !symbol_table $1 
+		and r = get_int_value !symbol_table $3 in
+			position, r, ("", "")
 	}
 ;
 
@@ -216,14 +226,49 @@ dot:
 ;
 
 text_options:
-	dot COMA WORD COMA INTEGER COMA color {$1, $3, int_of_string($5), $7}
-	| dot COMA WORD COMA INTEGER {$1, $3, int_of_string($5), ("", "")}
-	| dot COMA INTEGER COMA color {$1, "", int_of_string($3), $5}
-	| dot COMA INTEGER {$1, "", int_of_string($3), ("", "")}
-	| dot COMA WORD COMA color {$1, $3, -1, $5}
-	| dot COMA WORD {$1, $3, -1, ("", "")}
-	| dot COMA color {$1, "", -1, $3}
-	| dot {$1, "", -1, ("", "")}
+	WORD COMA WORD COMA color {
+		let position = get_dot_values !symbol_table $1 
+		and size = get_int_value !symbol_table $3 in
+			position, int_of_string(size), $5
+	}
+	
+	| WORD COMA WORD COMA WORD  {
+		let position = get_dot_values !symbol_table $1 
+		and size = get_int_value !symbol_table $3 in
+			position, int_of_string(size), ("", "")
+	}
+	
+	| WORD COMA WORD COMA color  {
+		let position = get_dot_values !symbol_table $1 
+		and size = get_int_value !symbol_table $3 in
+			position, int_of_string(size), $5
+	}
+	
+	| WORD COMA WORD  {
+		let position = get_dot_values !symbol_table $1 
+		and size = get_int_value !symbol_table $3 in
+			position, int_of_string(size), ("", "")
+	}
+	
+	| WORD COMA WORD COMA color  {
+		let position = get_dot_values !symbol_table $1 in
+			position, -1, $5
+	}
+	
+	| WORD COMA WORD  {
+		let position = get_dot_values !symbol_table $1 in
+			position, -1, ("", "")
+	}
+	
+	| WORD COMA color  {
+		let position = get_dot_values !symbol_table $1 in
+			position, -1, $3
+	}
+	
+	| WORD  {
+		let position = get_dot_values !symbol_table $1 in
+			position, -1, ("", "")
+	}
 
 radius:
 	RADIUS LEFT_PARENTHESIS INTEGER RIGHT_PARENTHESIS {$3}
