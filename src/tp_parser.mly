@@ -119,11 +119,20 @@ declaration:
 	}
 	
 	| LINE WORD ASSIGNMENT LEFT_PARENTHESIS line_data RIGHT_PARENTHESIS {
-		let (data_dot_one, data_dot_two, data_circle) = $5 in
+		let (data_dot_one, data_dot_two, data_line) = $5 in
 		let (cx_one, cy_one) = data_dot_one
 		and (cx_two, cy_two) = data_dot_two
-		and (fill, stroke) = data_circle in
+		and (fill, stroke) = data_line in
 			symbol_table := add_symbol !symbol_table $2 "line" [cx_one;cy_one;cx_two;cy_two];
+			[]
+	}
+	
+	| RECTANGLE WORD ASSIGNMENT LEFT_PARENTHESIS rectangle_data RIGHT_PARENTHESIS {
+		let (data_dot_one, data_dot_two, data_rectangle) = $5 in
+		let (cx_one, cy_one) = data_dot_one
+		and (cx_two, cy_two) = data_dot_two
+		and (fill, stroke) = data_rectangle in
+			symbol_table := add_symbol !symbol_table $2 "rectangle" [cx_one;cy_one;cx_two;cy_two];
 			[]
 	}
 	
@@ -133,6 +142,7 @@ declaration:
 				match symbol_type with
 				| "circle"		-> (add_circle empty_list symbol_data "" "")
 				| "line" 		-> (add_line empty_list symbol_data "" "")
+				| "rectangle" 	-> (add_rectangle empty_list symbol_data "" "")
 				| _ -> (print_endline "Nothing to draw."; [])
 				
 	}
@@ -181,8 +191,17 @@ circle_data:
 ;
 
 rectangle_data:
-	dot COMA dot COMA color {$1, $3, $5}
-	| dot COMA dot {$1, $3, ("", "")}
+	WORD COMA WORD COMA color {
+		let position_one = get_dot_values !symbol_table $1 
+		and position_two = get_dot_values !symbol_table $3 in
+			position_one, position_two, $5
+	}
+	
+	| WORD COMA WORD {
+		let position_one = get_dot_values !symbol_table $1 
+		and position_two = get_dot_values !symbol_table $3 in
+			position_one, position_two, ("", "")
+	}
 ;
 
 color:

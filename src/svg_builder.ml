@@ -81,7 +81,6 @@ let rec build_stroke_attribute stroke_color =
 
 (* Add a circle node to document *)
 let rec add_circle document circle_data fill stroke =
-	print_list circle_data;
 	let node = "  <circle cx=\"" ^ (hd circle_data) ^ "\" cy=\"" ^ (nth circle_data 1) ^ "\" r=\"" ^ (nth circle_data 2) ^ "\" "
 	^ build_fill_attribute(fill)
 	^ build_stroke_attribute(stroke)
@@ -89,14 +88,18 @@ let rec add_circle document circle_data fill stroke =
 		add_node document node;;
 		
 (* Add a rectangle node to document *)
-let rec add_rectangle document x_one y_one x_two y_two fill stroke =
-	let w = abs(int_of_string(x_two) - int_of_string(x_one))
-	and h = abs(int_of_string(y_two) - int_of_string(y_one)) in
-		let node = "  <rect width=\"" ^ string_of_int(w) ^ "\" height=\"" ^ string_of_int(h) ^ "\" x=\"" ^ x_one ^ "\" y=\"" ^ y_one ^ "\" "
-		^ build_fill_attribute(fill)
-		^ build_stroke_attribute(stroke)
-		^ "/>\n" in
-			add_node document node;;
+let rec add_rectangle document rectangle_data fill stroke =
+	let x_one = (hd rectangle_data)
+	and y_one = (nth rectangle_data 1)
+	and x_two = (nth rectangle_data 2)
+	and y_two = (nth rectangle_data 3) in
+		let w = abs(int_of_string(x_two) - int_of_string(x_one))
+		and h = abs(int_of_string(y_two) - int_of_string(y_one)) in
+			let node = "  <rect width=\"" ^ string_of_int(w) ^ "\" height=\"" ^ string_of_int(h) ^ "\" x=\"" ^ x_one ^ "\" y=\"" ^ y_one ^ "\" "
+			^ build_fill_attribute(fill)
+			^ build_stroke_attribute(stroke)
+			^ "/>\n" in
+				add_node document node;;
 
 (* Add a line node to document *)
 let rec add_line document line_data fill stroke =
@@ -104,11 +107,11 @@ let rec add_line document line_data fill stroke =
 	and y_one = (nth line_data 1)
 	and x_two = (nth line_data 2)
 	and y_two = (nth line_data 3) in
-	let node = "  <line x1=\"" ^ x_one ^ "\" y1=\"" ^ y_one ^ "\" x2=\"" ^ x_two ^ "\" y2=\"" ^ y_two ^ "\" "
-	^ build_fill_attribute(fill)
-	^ build_stroke_attribute(stroke)
-	^ "/>\n" in
-		add_node document node;;
+		let node = "  <line x1=\"" ^ x_one ^ "\" y1=\"" ^ y_one ^ "\" x2=\"" ^ x_two ^ "\" y2=\"" ^ y_two ^ "\" "
+		^ build_fill_attribute(fill)
+		^ build_stroke_attribute(stroke)
+		^ "/>\n" in
+			add_node document node;;
 
 (* Build points attribute for polygon node *)
 let rec build_dots dots = 
