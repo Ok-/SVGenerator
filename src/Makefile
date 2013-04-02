@@ -9,11 +9,10 @@ all:
 	$(CAMLC) -c svg_builder.ml
 	$(CAMLLEX) tp_lexer.mll
 	$(CAMLYACC) tp_parser.mly
-	$(CAMLC) -c fonctions.ml
 	$(CAMLC) -c tp_parser.mli
 	$(CAMLC) -c tp_parser.ml
 	$(CAMLC) -c tp_lexer.ml
-	$(CAMLC) fonctions.cmo svg_builder.cmo tp_parser.cmo tp_lexer.cmo main.ml -o $(EXEC)
+	$(CAMLC) svg_builder.cmo tp_parser.cmo tp_lexer.cmo main.ml -o $(EXEC)
 
 clean:
 	rm -f *.cm[iox] *.mli *~ .*~

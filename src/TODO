@@ -2,8 +2,8 @@
 |	TODO	|
 +-----------+
 
-	- Variable assignment
-	- Complex shapes (curves,...)
-	- Loop
+	- Variable assignment for all shapes [In progress]
+	- Operations on variables	
+	- Loop / condition
 
 See : http://www.w3.org/TR/SVG11/

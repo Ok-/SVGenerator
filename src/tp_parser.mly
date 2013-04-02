@@ -1,5 +1,4 @@
 %{
-	open Fonctions;;
 	open String;;
 	open List;;
 	open Svg_builder;;
@@ -54,7 +53,7 @@ main:
 ;
 
 def_image:
-    IMAGE image_name def_image_size BEGIN_BLOCK NEW_LINE description content NEW_LINE {
+    IMAGE STRINGVALUE def_image_size BEGIN_BLOCK NEW_LINE description content NEW_LINE {
     	let (w,h) = $3 in
     	let empty_document = begin_root document w h in
     	let titled_document = add_title empty_document $2 in 
@@ -67,10 +66,6 @@ def_image:
     		print_xml xml;
     		print_file(concat_xml(xml), $2)
     }
-;
-
-image_name:
-	STRINGVALUE {$1}
 ;
 
 def_image_size:
@@ -118,39 +113,90 @@ declaration:
 			[]
 	}
 
-	| CIRCLE WORD ASSIGNMENT LEFT_PARENTHESIS circle_data RIGHT_PARENTHESIS {
-		let (data_dot, r, data_circle) = $5 in
-		let (cx, cy) = data_dot in
-			symbol_table := add_symbol !symbol_table $2 "circle" [cx;cy;r] data_circle;
+	| CIRCLE WORD ASSIGNMENT LEFT_PARENTHESIS WORD COMA WORD COMA color RIGHT_PARENTHESIS {
+		let (cx, cy) = get_dot_values !symbol_table $5 
+		and r = get_int_value !symbol_table $7
+		and color = $9 in
+			symbol_table := add_symbol !symbol_table $2 "circle" [cx;cy;r] color;
+			[]
+	}
+
+	| CIRCLE WORD ASSIGNMENT LEFT_PARENTHESIS WORD COMA WORD RIGHT_PARENTHESIS {
+		let (cx, cy) = get_dot_values !symbol_table $5 
+		and r = get_int_value !symbol_table $7
+		and color = ("", "") in
+			symbol_table := add_symbol !symbol_table $2 "circle" [cx;cy;r] color;
 			[]
 	}
 	
-	| LINE WORD ASSIGNMENT LEFT_PARENTHESIS line_data RIGHT_PARENTHESIS {
-		let (data_dot_one, data_dot_two, data_line) = $5 in
-		let (cx_one, cy_one) = data_dot_one
-		and (cx_two, cy_two) = data_dot_two in
-			symbol_table := add_symbol !symbol_table $2 "line" [cx_one;cy_one;cx_two;cy_two] data_line;
+	| LINE WORD ASSIGNMENT LEFT_PARENTHESIS WORD COMA WORD COMA color RIGHT_PARENTHESIS {
+		let (cx_one, cy_one) = get_dot_values !symbol_table $5
+		and (cx_two, cy_two) = get_dot_values !symbol_table $7 
+		and color = $9 in
+			symbol_table := add_symbol !symbol_table $2 "line" [cx_one;cy_one;cx_two;cy_two] color;
+			[]
+	}
+		
+	| LINE WORD ASSIGNMENT LEFT_PARENTHESIS WORD COMA WORD RIGHT_PARENTHESIS {
+		let (cx_one, cy_one) = get_dot_values !symbol_table $5
+		and (cx_two, cy_two) = get_dot_values !symbol_table $7 
+		and color = ("", "") in
+			symbol_table := add_symbol !symbol_table $2 "line" [cx_one;cy_one;cx_two;cy_two] color;
 			[]
 	}
 	
-	| RECTANGLE WORD ASSIGNMENT LEFT_PARENTHESIS rectangle_data RIGHT_PARENTHESIS {
-		let (data_dot_one, data_dot_two, data_rectangle) = $5 in
-		let (cx_one, cy_one) = data_dot_one
-		and (cx_two, cy_two) = data_dot_two  in
-			symbol_table := add_symbol !symbol_table $2 "rectangle" [cx_one;cy_one;cx_two;cy_two] data_rectangle;
+	| RECTANGLE WORD ASSIGNMENT LEFT_PARENTHESIS WORD COMA WORD COMA color RIGHT_PARENTHESIS {
+		let (cx_one, cy_one) = get_dot_values !symbol_table $5
+		and (cx_two, cy_two) = get_dot_values !symbol_table $7
+		and color = $9 in
+			symbol_table := add_symbol !symbol_table $2 "rectangle" [cx_one;cy_one;cx_two;cy_two] color;
+			[]
+	}
+		
+	| RECTANGLE WORD ASSIGNMENT LEFT_PARENTHESIS WORD COMA WORD RIGHT_PARENTHESIS {
+		let (cx_one, cy_one) = get_dot_values !symbol_table $5
+		and (cx_two, cy_two) = get_dot_values !symbol_table $7
+		and color = ("", "") in
+			symbol_table := add_symbol !symbol_table $2 "rectangle" [cx_one;cy_one;cx_two;cy_two] color;
 			[]
 	}
 	
-	| TEXT WORD ASSIGNMENT LEFT_PARENTHESIS STRINGVALUE COMA text_options RIGHT_PARENTHESIS { 
-		let (data_dot, size, color) = $7 in
-		let (x, y) = data_dot in
-			symbol_table := add_symbol !symbol_table $2 "text" [$5; x; y; string_of_int(size)] color;
+	| TEXT WORD ASSIGNMENT LEFT_PARENTHESIS STRINGVALUE COMA WORD RIGHT_PARENTHESIS { 
+		let (x, y) = get_dot_values !symbol_table $7
+		and color = ("", "") in
+			symbol_table := add_symbol !symbol_table $2 "text" [$5; x; y; "-1"] color;
 			[]
 	}
 	
-	| POLYGON WORD ASSIGNMENT LEFT_PARENTHESIS polygon_data RIGHT_PARENTHESIS {
-		let (dots, color_data) = $5 in
-			symbol_table := add_symbol !symbol_table $2 "polygon" dots color_data;
+	| TEXT WORD ASSIGNMENT LEFT_PARENTHESIS STRINGVALUE COMA WORD COMA color RIGHT_PARENTHESIS {
+		let (x, y) = get_dot_values !symbol_table $7
+		and color = $9 in
+			symbol_table := add_symbol !symbol_table $2 "text" [$5; x; y; "-1"] color;
+			[]
+	}
+	
+	| TEXT WORD ASSIGNMENT LEFT_PARENTHESIS STRINGVALUE COMA WORD COMA WORD COMA color RIGHT_PARENTHESIS {
+		let (x, y) = get_dot_values !symbol_table $7 
+		and size = get_int_value !symbol_table $9
+		and color = ("", "") in
+			symbol_table := add_symbol !symbol_table $2 "text" [$5; x; y; size] color;
+			[]
+	}
+	
+	| TEXT WORD ASSIGNMENT LEFT_PARENTHESIS STRINGVALUE COMA WORD COMA WORD RIGHT_PARENTHESIS {
+		let (x, y) = get_dot_values !symbol_table $7 
+		and size = get_int_value !symbol_table $9
+		and color = ("", "") in
+			symbol_table := add_symbol !symbol_table $2 "text" [$5; x; y; size] color;
+			[]
+	}
+	
+	| POLYGON WORD ASSIGNMENT LEFT_PARENTHESIS WORD dots_list RIGHT_PARENTHESIS {
+		let (dots_list, color) = $6
+		and dot_data = get_dot_values !symbol_table $5 in
+		let (x, y) = dot_data in
+		let dots = (x::y::dots_list) in
+			symbol_table := add_symbol !symbol_table $2 "polygon" dots color;
 			[]
 	}
 	
@@ -166,15 +212,6 @@ declaration:
 				| "polygon" 		-> (add_polygon empty_list symbol_data fill stroke)
 				| _ -> (print_endline "Nothing to draw."; [])
 				
-	}
-;
-
-polygon_data:
-	WORD dots_list {
-		let (dots_list, color) = $2 
-		and dot_data = get_dot_values !symbol_table $1 in
-			let (x, y) = dot_data in
-				((x::y::dots_list), color)
 	}
 ;
 
@@ -197,46 +234,6 @@ dots_list:
 		let (x, y) = dot_data in
 			[x;y], $4
 	}
-
-line_data:
-	WORD COMA WORD COMA color {
-		let position_one = get_dot_values !symbol_table $1 
-		and position_two = get_dot_values !symbol_table $3 in
-			position_one, position_two, $5
-	}
-	
-	| WORD COMA WORD {
-		let position_one = get_dot_values !symbol_table $1 
-		and position_two = get_dot_values !symbol_table $3 in
-			position_one, position_two, ("", "")
-	}
-;
-
-circle_data:
-	WORD COMA WORD COMA color {
-		let position = get_dot_values !symbol_table $1 
-		and r = get_int_value !symbol_table $3 in
-			position, r, $5
-	}
-	| WORD COMA WORD {
-		let position = get_dot_values !symbol_table $1 
-		and r = get_int_value !symbol_table $3 in
-			position, r, ("", "")
-	}
-;
-
-rectangle_data:
-	WORD COMA WORD COMA color {
-		let position_one = get_dot_values !symbol_table $1 
-		and position_two = get_dot_values !symbol_table $3 in
-			position_one, position_two, $5
-	}
-	
-	| WORD COMA WORD {
-		let position_one = get_dot_values !symbol_table $1 
-		and position_two = get_dot_values !symbol_table $3 in
-			position_one, position_two, ("", "")
-	}
 ;
 
 color:
@@ -252,51 +249,6 @@ dot:
 	| WORD COMA INTEGER {(get_int_value !symbol_table $1),$3}
 	| WORD COMA WORD {(get_int_value !symbol_table $1),(get_int_value !symbol_table $3)}
 ;
-
-text_options:
-	WORD COMA WORD COMA color {
-		let position = get_dot_values !symbol_table $1 
-		and size = get_int_value !symbol_table $3 in
-			position, int_of_string(size), $5
-	}
-	
-	| WORD COMA WORD COMA WORD  {
-		let position = get_dot_values !symbol_table $1 
-		and size = get_int_value !symbol_table $3 in
-			position, int_of_string(size), ("", "")
-	}
-	
-	| WORD COMA WORD COMA color  {
-		let position = get_dot_values !symbol_table $1 
-		and size = get_int_value !symbol_table $3 in
-			position, int_of_string(size), $5
-	}
-	
-	| WORD COMA WORD  {
-		let position = get_dot_values !symbol_table $1 
-		and size = get_int_value !symbol_table $3 in
-			position, int_of_string(size), ("", "")
-	}
-	
-	| WORD COMA WORD COMA color  {
-		let position = get_dot_values !symbol_table $1 in
-			position, -1, $5
-	}
-	
-	| WORD COMA WORD  {
-		let position = get_dot_values !symbol_table $1 in
-			position, -1, ("", "")
-	}
-	
-	| WORD COMA color  {
-		let position = get_dot_values !symbol_table $1 in
-			position, -1, $3
-	}
-	
-	| WORD  {
-		let position = get_dot_values !symbol_table $1 in
-			position, -1, ("", "")
-	}
 
 radius:
 	RADIUS LEFT_PARENTHESIS INTEGER RIGHT_PARENTHESIS {$3}

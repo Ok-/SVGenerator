@@ -19,7 +19,7 @@ let rec add_symbol symbol_table symbol_name symbol_type values_list colors =
 	let (fill, stroke) = colors in
 		if (exists (check_symbol symbol_name) symbol_table) then
 			let new_table = (remove_assoc symbol_name symbol_table) in
-				(symbol_name, [[symbol_type]; values_list; [fill; stroke]]) :: symbol_table
+				(symbol_name, [[symbol_type]; values_list; [fill; stroke]]) :: new_table
 		else 
 			(symbol_name, [[symbol_type]; values_list; [fill; stroke]]) :: symbol_table;;
 
@@ -27,21 +27,18 @@ let rec add_symbol symbol_table symbol_name symbol_type values_list colors =
 let rec get_dot_values symbol_table symbol_name =
 	let dot_data = assoc symbol_name symbol_table in
 		let position = hd(tl(dot_data)) in
-			(print_list position;
-			(hd position), (nth position 1));;
+			(hd position), (nth position 1);;
 
 (* Get int value *)
 let rec get_int_value symbol_table symbol_name =
 	let dot_data = assoc symbol_name symbol_table in
 		let position = hd(tl(dot_data)) in
-			(print_list position;
-			(hd position));;
+			(hd position);;
 
 (* Get radius value *)
 let rec get_colors symbol_table symbol_name =
 	let shape_data = assoc symbol_name symbol_table in
 		let colors = (nth shape_data 2) in
-			print_list colors;
 			(hd colors), (nth colors 1);;
 
 (* ================================================================================ *)	
