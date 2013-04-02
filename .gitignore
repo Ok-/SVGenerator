@@ -8,3 +8,9 @@
 *.cmxs
 *.cmxa
 *.svg
+*.log
+*.out
+*.pdf
+*.aux
+*.toc
+*/svgenerator
