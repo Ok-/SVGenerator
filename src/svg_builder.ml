@@ -15,12 +15,13 @@ let rec check_symbol new_symbol_name symbol =
 		new_symbol_name = name;;
 
 (* Add or replace a symbol in the symbol table *)
-let rec add_symbol symbol_table symbol_name symbol_type values_list =
-	if (exists (check_symbol symbol_name) symbol_table) then
-		let new_table = (remove_assoc symbol_name symbol_table) in
-			(symbol_name, [[symbol_type]; values_list]) :: symbol_table
-	else 
-		(symbol_name, [[symbol_type]; values_list]) :: symbol_table;;
+let rec add_symbol symbol_table symbol_name symbol_type values_list colors =
+	let (fill, stroke) = colors in
+		if (exists (check_symbol symbol_name) symbol_table) then
+			let new_table = (remove_assoc symbol_name symbol_table) in
+				(symbol_name, [[symbol_type]; values_list; [fill; stroke]]) :: symbol_table
+		else 
+			(symbol_name, [[symbol_type]; values_list; [fill; stroke]]) :: symbol_table;;
 
 (* Get dot x and y values *)
 let rec get_dot_values symbol_table symbol_name =
@@ -35,6 +36,13 @@ let rec get_int_value symbol_table symbol_name =
 		let position = hd(tl(dot_data)) in
 			(print_list position;
 			(hd position));;
+
+(* Get radius value *)
+let rec get_colors symbol_table symbol_name =
+	let shape_data = assoc symbol_name symbol_table in
+		let colors = (nth shape_data 2) in
+			print_list colors;
+			(hd colors), (nth colors 1);;
 
 (* ================================================================================ *)	
 
@@ -71,12 +79,12 @@ let rec add_description document description =
 
 (* Build police attribute for color *)
 let rec build_fill_attribute fill_color =
-	if fill_color = "" then "fill=\"black\" "
+	if fill_color = "" then ""
 	else "fill=\"" ^ fill_color ^ "\" ";;
 
 (* Build police attribute for color *)
 let rec build_stroke_attribute stroke_color =
-	if stroke_color = "" then "stroke=\"black\" "
+	if stroke_color = "" then ""
 	else "stroke=\"" ^ stroke_color ^ "\" ";;
 
 (* Add a circle node to document *)

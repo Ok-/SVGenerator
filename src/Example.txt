@@ -16,16 +16,50 @@ image "Wonderful world" (500, 300) {
 	dot d13 := (303,214);
 	dot d14 := (231,160);
 	dot d15 := (321,160);
-	integer r := 50;
+	integer r1 := 50;
+	integer r2 := 20;
 	integer t := 40;
-	circle c1 := (center, r, fill(orange), stroke(red));
+	circle c1 := (center, r1, fill(orange), stroke(red));
 	line l1 := (d1, d2, fill(grey), stroke(green));
-	rectangle r1 := (d3, d4, fill(grey), stroke(green));
+	rectangle r1 := (d3, d4, fill(cyan), stroke(blue));
 	text t1 := ("Test", d5, t, fill(purple), stroke(pink));
-	polygon p1 := (d6, d7, d8, d9, d10, d11, d12, d13, d14, d15);
-	draw c1;
+	polygon p1 := (d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, fill(gold));
+	circle c2 := (center, r2, fill(yellow));
 	draw l1;
+	draw c1;
 	draw r1;
 	draw t1;
 	draw p1;
+	draw c2;
+}
+
+image "icons" (300, 100) {
+	description ("Free icons!"); //Almost free, cool stuff just for $5!
+	dot center1 := (50,50);
+	dot center2 := (150,50);
+	dot center3 := (250,50);
+	integer r := 50;
+	dot d1 := (35,30);
+	dot d2 := (35,70);
+	dot d3 := (75,50);
+	dot d4 := (130,30);
+	dot d5 := (145,70);
+	dot d6 := (155,30);
+	dot d7 := (170,70);
+	dot d8 := (230,30);
+	dot d9 := (270,70);
+	circle c1 := (center1, r, fill(forestgreen)); 
+	polygon p1 := (d1, d2, d3);
+	circle c2 := (center2, r, fill(orange));
+	rectangle r1 := (d4, d5);
+	rectangle r2 := (d6, d7);
+	circle c3 := (center3, r, fill(red));
+	rectangle r3 := (d8, d9);
+	draw c1;
+	draw p1;
+	draw c2;
+	draw r1;
+	draw r2;
+	draw c3;
+	draw r3;
 }

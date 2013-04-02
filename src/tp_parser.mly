@@ -102,64 +102,61 @@ endline_comment:
 
 declaration:
 	INTEGER_TYPE WORD ASSIGNMENT INTEGER {
-		symbol_table := (add_symbol !symbol_table $2 "integer" [$4]);
+		symbol_table := (add_symbol !symbol_table $2 "integer" [$4] ("black","black"));
 		[]
 	}
 
 	| DOT WORD ASSIGNMENT LEFT_PARENTHESIS INTEGER COMA INTEGER RIGHT_PARENTHESIS {
-		symbol_table := (add_symbol !symbol_table $2 "dot" [$5;$7]);
+		symbol_table := (add_symbol !symbol_table $2 "dot" [$5;$7] ("black","black"));
 		[]
 	}
 
 	| CIRCLE WORD ASSIGNMENT LEFT_PARENTHESIS circle_data RIGHT_PARENTHESIS {
 		let (data_dot, r, data_circle) = $5 in
-		let (cx, cy) = data_dot and (fill, stroke) = data_circle in
-			symbol_table := add_symbol !symbol_table $2 "circle" [cx;cy;r];
+		let (cx, cy) = data_dot in
+			symbol_table := add_symbol !symbol_table $2 "circle" [cx;cy;r] data_circle;
 			[]
 	}
 	
 	| LINE WORD ASSIGNMENT LEFT_PARENTHESIS line_data RIGHT_PARENTHESIS {
 		let (data_dot_one, data_dot_two, data_line) = $5 in
 		let (cx_one, cy_one) = data_dot_one
-		and (cx_two, cy_two) = data_dot_two
-		and (fill, stroke) = data_line in
-			symbol_table := add_symbol !symbol_table $2 "line" [cx_one;cy_one;cx_two;cy_two];
+		and (cx_two, cy_two) = data_dot_two in
+			symbol_table := add_symbol !symbol_table $2 "line" [cx_one;cy_one;cx_two;cy_two] data_line;
 			[]
 	}
 	
 	| RECTANGLE WORD ASSIGNMENT LEFT_PARENTHESIS rectangle_data RIGHT_PARENTHESIS {
 		let (data_dot_one, data_dot_two, data_rectangle) = $5 in
 		let (cx_one, cy_one) = data_dot_one
-		and (cx_two, cy_two) = data_dot_two
-		and (fill, stroke) = data_rectangle in
-			symbol_table := add_symbol !symbol_table $2 "rectangle" [cx_one;cy_one;cx_two;cy_two];
+		and (cx_two, cy_two) = data_dot_two  in
+			symbol_table := add_symbol !symbol_table $2 "rectangle" [cx_one;cy_one;cx_two;cy_two] data_rectangle;
 			[]
 	}
 	
 	| TEXT WORD ASSIGNMENT LEFT_PARENTHESIS STRINGVALUE COMA text_options RIGHT_PARENTHESIS { 
 		let (data_dot, size, color) = $7 in
-		let (x, y) = data_dot
-		and (fill, stroke) = color in
-			symbol_table := add_symbol !symbol_table $2 "text" [$5; x; y; string_of_int(size)];
+		let (x, y) = data_dot in
+			symbol_table := add_symbol !symbol_table $2 "text" [$5; x; y; string_of_int(size)] color;
 			[]
 	}
 	
 	| POLYGON WORD ASSIGNMENT LEFT_PARENTHESIS polygon_data RIGHT_PARENTHESIS {
 		let (dots, color_data) = $5 in
-		let (fill, stroke) = color_data in
-			symbol_table := add_symbol !symbol_table $2 "polygon" dots;
+			symbol_table := add_symbol !symbol_table $2 "polygon" dots color_data;
 			[]
 	}
 	
 	| DRAW WORD {
 		let element = assoc $2 !symbol_table in
-			let symbol_type = hd(hd(element)) and symbol_data = hd(tl(element)) in
+			let symbol_type = hd(hd(element)) and symbol_data = hd(tl(element)) and
+			(fill, stroke) = (get_colors !symbol_table $2) in
 				match symbol_type with
-				| "line" 		-> (add_line empty_list symbol_data "" "")
-				| "circle"		-> (add_circle empty_list symbol_data "" "")
-				| "rectangle" 	-> (add_rectangle empty_list symbol_data "" "")
-				| "text" 		-> (add_text empty_list symbol_data "" "")
-				| "polygon" 		-> (add_polygon empty_list symbol_data "" "")
+				| "line" 		-> (add_line empty_list symbol_data fill stroke)
+				| "circle"		-> (add_circle empty_list symbol_data fill stroke)
+				| "rectangle" 	-> (add_rectangle empty_list symbol_data fill stroke)
+				| "text" 		-> (add_text empty_list symbol_data fill stroke)
+				| "polygon" 		-> (add_polygon empty_list symbol_data fill stroke)
 				| _ -> (print_endline "Nothing to draw."; [])
 				
 	}
