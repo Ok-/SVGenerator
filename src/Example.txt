@@ -6,14 +6,26 @@ image "Wonderful world" (500, 300) {
 	dot d3 := (50,50);
 	dot d4 := (100,100);
 	dot d5 := (200,70);
+	dot d6 := (350,74);
+	dot d7 := (379,160);
+	dot d8 := (469,160);
+	dot d9 := (397,214);
+	dot d10 := (423,300);
+	dot d11 := (350,249);
+	dot d12 := (277,300);
+	dot d13 := (303,214);
+	dot d14 := (231,160);
+	dot d15 := (321,160);
 	integer r := 50;
 	integer t := 40;
 	circle c1 := (center, r, fill(orange), stroke(red));
 	line l1 := (d1, d2, fill(grey), stroke(green));
 	rectangle r1 := (d3, d4, fill(grey), stroke(green));
 	text t1 := ("Test", d5, t, fill(purple), stroke(pink));
+	polygon p1 := (d6, d7, d8, d9, d10, d11, d12, d13, d14, d15);
 	draw c1;
 	draw l1;
 	draw r1;
 	draw t1;
+	draw p1;
 }

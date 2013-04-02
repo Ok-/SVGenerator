@@ -144,6 +144,13 @@ declaration:
 			[]
 	}
 	
+	| POLYGON WORD ASSIGNMENT LEFT_PARENTHESIS polygon_data RIGHT_PARENTHESIS {
+		let (dots, color_data) = $5 in
+		let (fill, stroke) = color_data in
+			symbol_table := add_symbol !symbol_table $2 "polygon" dots;
+			[]
+	}
+	
 	| DRAW WORD {
 		let element = assoc $2 !symbol_table in
 			let symbol_type = hd(hd(element)) and symbol_data = hd(tl(element)) in
@@ -152,26 +159,39 @@ declaration:
 				| "circle"		-> (add_circle empty_list symbol_data "" "")
 				| "rectangle" 	-> (add_rectangle empty_list symbol_data "" "")
 				| "text" 		-> (add_text empty_list symbol_data "" "")
+				| "polygon" 		-> (add_polygon empty_list symbol_data "" "")
 				| _ -> (print_endline "Nothing to draw."; [])
 				
 	}
 ;
 
 polygon_data:
-	dot dots_list {
-		let (dots_list, color) = $2 in
-			(($1::dots_list), color)
+	WORD dots_list {
+		let (dots_list, color) = $2 
+		and dot_data = get_dot_values !symbol_table $1 in
+			let (x, y) = dot_data in
+				((x::y::dots_list), color)
 	}
 ;
 
 dots_list:
-	COMA dot dots_list {
-		let (dots_list, color) = $3 in
-			(($2::dots_list), color)
+	COMA WORD dots_list {
+		let (dots_list, color) = $3 
+		and dot_data = get_dot_values !symbol_table $2 in
+		let (x, y) = dot_data in
+			((x::y::dots_list), color)
 	}
 	
-	| COMA dot {[$2], ("", "")}
-	| COMA dot COMA color {[$2], $4}
+	| COMA WORD {
+		let dot_data = get_dot_values !symbol_table $2 in
+		let (x, y) = dot_data in
+			[x;y], ("", "")
+	}
+	| COMA WORD COMA color {
+		let dot_data = get_dot_values !symbol_table $2 in
+		let (x, y) = dot_data in
+			[x;y], $4
+	}
 
 line_data:
 	WORD COMA WORD COMA color {

@@ -116,8 +116,10 @@ let rec add_line document line_data fill stroke =
 (* Build points attribute for polygon node *)
 let rec build_dots dots = 
 	if dots = [] then ""
-	else let (x,y) = hd(dots) in
-		" " ^ x ^ "," ^ y ^ " " ^ build_dots(tl(dots));;
+	else if tl(dots) = [] then ""
+	else let x = hd(dots)
+		and y = hd(tl(dots)) in
+		" " ^ x ^ "," ^ y ^ " " ^ build_dots(tl(tl(dots)));;
 
 (* Add a polygon node to document *)
 let rec add_polygon document dots fill stroke =
