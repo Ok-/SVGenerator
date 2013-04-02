@@ -1,20 +1,7 @@
 image "Wonderful world" (500, 300) {
 	description ("And I think to myself, What a wonderful world!");
-	line (dot(0,0), dot(300,300), fill(grey), stroke(green));
-	circle (dot(150,150), radius(50), fill(orange), stroke(red));
-	circle (dot(150,150), radius(20), fill(yellow));
-	rectangle (dot(50,50), dot(100,100), fill(cyan), stroke(blue)); //Awesome square!
-	text ("lol la couleur", dot(200,70), Verdana, 40, fill(purple), stroke(pink));
-	polygon (dot(350,74), dot(379,160), dot(469,160), dot(397,214), dot(423,300), dot(350,249), dot(277,300), dot(303,214), dot(231,160), dot(321,160), fill(gold));
-}
-
-image "icons" (300, 100) {
-	description ("Free icons!"); //Almost free, cool stuff just for 5$!
-	circle (dot(50,50), radius(50), fill(green)); 
-	polygon (dot(35,30), dot(35,70), dot(75,50));
-	circle (dot(150,50), radius(50), fill(orange));
-	rectangle (dot(130,30), dot(145,70));
-	rectangle (dot(155,30), dot(170,70));
-	circle (dot(250,50), radius(50), fill(red));
-	rectangle (dot(230,30), dot(270,70));
+	dot center := (150,150);
+	integer r := 50;
+	circle truc := (center, r, fill(orange), stroke(red));
+	draw truc;
 }

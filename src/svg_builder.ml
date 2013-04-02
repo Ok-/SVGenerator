@@ -2,7 +2,44 @@ open List;;
 open Printf;;
 open String;;
 
-(* type xml = string list list;; *)
+(* ====== Functions to get data from symbol table ====== *)
+
+(* Print a list of strings *)
+let rec print_list = function 
+[] -> ()
+| e::l -> print_string (e ^ " ") ; print_list l
+
+(* Check if a symbol already exists in the table *)
+let rec check_symbol new_symbol_name symbol =
+	let (name, data) = symbol in
+		new_symbol_name = name;;
+
+(* Add or replace a symbol in the symbol table *)
+let rec add_symbol symbol_table symbol_name symbol_type values_list =
+	if (exists (check_symbol symbol_name) symbol_table) then
+		let new_table = (remove_assoc symbol_name symbol_table) in
+			(symbol_name, [[symbol_type]; values_list]) :: symbol_table
+	else 
+		(symbol_name, [[symbol_type]; values_list]) :: symbol_table;;
+
+(* Get dot x and y values *)
+let rec get_dot_values symbol_table symbol_name =
+	let dot_data = assoc symbol_name symbol_table in
+		let position = hd(tl(dot_data)) in
+			(print_list position;
+			(hd position), (nth position 1));;
+
+(* Get radius value *)
+let rec get_radius_value symbol_table symbol_name =
+	let dot_data = assoc symbol_name symbol_table in
+		let position = hd(tl(dot_data)) in
+			(print_list position;
+			(hd position));;
+
+(* ================================================================================ *)	
+
+
+(* ====== Functions to build xml file (svg) ====== *)
 
 (* Initialize xml doc *)
 let rec start_xml document = 
@@ -43,8 +80,9 @@ let rec build_stroke_attribute stroke_color =
 	else "stroke=\"" ^ stroke_color ^ "\" ";;
 
 (* Add a circle node to document *)
-let rec add_circle document cx cy r fill stroke =
-	let node = "  <circle cx=\"" ^ cx ^ "\" cy=\"" ^ cy ^ "\" r=\"" ^ r ^ "\" "
+let rec add_circle document circle_data fill stroke =
+	print_list circle_data;
+	let node = "  <circle cx=\"" ^ (hd circle_data) ^ "\" cy=\"" ^ (nth circle_data 1) ^ "\" r=\"" ^ (nth circle_data 2) ^ "\" "
 	^ build_fill_attribute(fill)
 	^ build_stroke_attribute(stroke)
 	^ "/>\n" in
@@ -110,7 +148,7 @@ let rec add_endline_comment comment =
 (* Concat xml nodes in a string *)
 let rec concat_xml xml =
 	if xml = [] then ""
-	else hd(xml)^concat_xml(tl(xml))
+	else hd(xml) ^ concat_xml(tl(xml));;
 
 (* Print document *)
 let rec print_xml = function 

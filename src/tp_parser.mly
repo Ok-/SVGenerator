@@ -1,11 +1,12 @@
 %{
-open Fonctions;;
-open String;;
-open List;;
-open Svg_builder;;
+	open Fonctions;;
+	open String;;
+	open List;;
+	open Svg_builder;;
 
-let empty_list = [];;
-let document = start_xml empty_list;;
+	let empty_list = [];;
+	let document = start_xml empty_list;;
+	let symbol_table = ref [];;
 %}
 
 %token EOF
@@ -26,9 +27,12 @@ let document = start_xml empty_list;;
 %token LINE
 %token TEXT
 %token POLYGON
+%token INTEGER_TYPE
+%token ASSIGNMENT
 %token RADIUS
 %token FILL
 %token STROKE
+%token DRAW
 
 %token SEMICOLON
 %token COMA
@@ -73,6 +77,11 @@ def_image_size:
 	LEFT_PARENTHESIS INTEGER COMA INTEGER RIGHT_PARENTHESIS {$2, $4}
 ;
 
+description:
+	DESCRIPTION LEFT_PARENTHESIS STRINGVALUE RIGHT_PARENTHESIS SEMICOLON endline_comment {$3, $6}
+	| DESCRIPTION LEFT_PARENTHESIS STRINGVALUE RIGHT_PARENTHESIS SEMICOLON {$3, ""}
+;
+
 content:
 	declaration SEMICOLON endline_comment {
 		[add_endline_comment($3)] :: $1
@@ -80,7 +89,9 @@ content:
 	
 	| declaration SEMICOLON endline_comment content {
 		let lst = ([add_endline_comment($3)] :: $1) in
-			lst @ $4
+			if lst <> [] then
+				lst @ $4
+			else $4
 	}
 ;
 
@@ -89,40 +100,31 @@ endline_comment:
 	| NEW_LINE {""}
 ;
 
-description:
-	DESCRIPTION LEFT_PARENTHESIS STRINGVALUE RIGHT_PARENTHESIS SEMICOLON endline_comment {$3, $6}
-	| DESCRIPTION LEFT_PARENTHESIS STRINGVALUE RIGHT_PARENTHESIS SEMICOLON {$3, ""}
-;
-
 declaration:
-	CIRCLE LEFT_PARENTHESIS circle_data RIGHT_PARENTHESIS {
-		let (data_dot, r, data_circle) = $3 in
+	CIRCLE WORD ASSIGNMENT LEFT_PARENTHESIS circle_data RIGHT_PARENTHESIS {
+		let (data_dot, r, data_circle) = $5 in
 		let (cx, cy) = data_dot and (fill, stroke) = data_circle in
-			add_circle empty_list cx cy r fill stroke
+			symbol_table := add_symbol !symbol_table $2 "circle" [cx;cy;r];
+			[]
 	}
 	
-	| RECTANGLE LEFT_PARENTHESIS rectangle_data RIGHT_PARENTHESIS {
-		let (data_dot_one, data_dot_two, data_circle) = $3 in
-		let (x_one, y_one) = data_dot_one and (x_two, y_two) = data_dot_two and (fill, stroke) = data_circle in
-			add_rectangle empty_list x_one y_one x_two y_two fill stroke
+	| INTEGER_TYPE WORD ASSIGNMENT INTEGER {
+		symbol_table := (add_symbol !symbol_table $2 "integer" [$4]);
+		[]
 	}
 	
-	| LINE LEFT_PARENTHESIS line_data RIGHT_PARENTHESIS {
-		let (data_dot_one, data_dot_two, data_circle) = $3 in
-		let (x_one, y_one) = data_dot_one and (x_two, y_two) = data_dot_two and (fill, stroke) = data_circle in
-			add_line empty_list x_one y_one x_two y_two fill stroke
+	| DOT WORD ASSIGNMENT LEFT_PARENTHESIS INTEGER COMA INTEGER RIGHT_PARENTHESIS {
+		symbol_table := (add_symbol !symbol_table $2 "dot" [$5;$7]);
+		[]
 	}
 	
-	| TEXT LEFT_PARENTHESIS STRINGVALUE COMA text_options RIGHT_PARENTHESIS {
-		let text = $3 and (data_dot, police, size, color_data) = $5 in
-		let (x, y) = data_dot and (fill, stroke) = color_data in 
-			add_text empty_list text x y police size fill stroke
-	}
-	
-	| POLYGON LEFT_PARENTHESIS polygon_data RIGHT_PARENTHESIS {
-		let (dots, color_data) = $3 in
-		let (fill, stroke) = color_data in
-			add_polygon empty_list dots fill stroke
+	| DRAW WORD {
+		let element = assoc $2 !symbol_table in
+			let symbol_type = hd(hd(element)) and symbol_data = hd(tl(element)) in
+				match symbol_type with
+				| "circle" -> (add_circle empty_list symbol_data "" "")
+				| _ -> (print_endline "Nothing to draw."; [])
+				
 	}
 ;
 
@@ -133,7 +135,7 @@ polygon_data:
 	}
 ;
 
-dots_list: //$2::$3, ("", "")
+dots_list:
 	COMA dot dots_list {
 		let (dots_list, color) = $3 in
 			(($2::dots_list), color)
@@ -148,8 +150,15 @@ line_data:
 ;
 
 circle_data:
-	dot COMA radius COMA color {$1, $3, $5}
-	| dot COMA radius {$1, $3, ("", "")}
+	WORD COMA WORD COMA color {
+		let position = get_dot_values !symbol_table $1 
+		and r = get_radius_value !symbol_table $3 in
+			position, r, $5
+	}
+	| WORD COMA radius {
+		let position = get_dot_values !symbol_table $1 in
+			position, $3, ("", "")
+	}
 ;
 
 rectangle_data:
