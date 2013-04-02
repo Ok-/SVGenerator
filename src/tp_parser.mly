@@ -105,10 +105,17 @@ declaration:
 		symbol_table := (add_symbol !symbol_table $2 "integer" [$4] ("black","black"));
 		[]
 	}
+	
+	| INTEGER_TYPE WORD ASSIGNMENT WORD {
+		let i = (get_int_value !symbol_table $4) in
+			symbol_table := (add_symbol !symbol_table $2 "integer" [i] ("black","black"));
+			[]
+	}
 
-	| DOT WORD ASSIGNMENT LEFT_PARENTHESIS INTEGER COMA INTEGER RIGHT_PARENTHESIS {
-		symbol_table := (add_symbol !symbol_table $2 "dot" [$5;$7] ("black","black"));
-		[]
+	| DOT WORD ASSIGNMENT LEFT_PARENTHESIS dot RIGHT_PARENTHESIS {
+		let (x,y) = $5 in
+			symbol_table := (add_symbol !symbol_table $2 "dot" [x;y] ("black","black"));
+			[]
 	}
 
 	| CIRCLE WORD ASSIGNMENT LEFT_PARENTHESIS circle_data RIGHT_PARENTHESIS {
@@ -184,6 +191,7 @@ dots_list:
 		let (x, y) = dot_data in
 			[x;y], ("", "")
 	}
+	
 	| COMA WORD COMA color {
 		let dot_data = get_dot_values !symbol_table $2 in
 		let (x, y) = dot_data in
@@ -239,7 +247,10 @@ color:
 ;
 
 dot:
-	DOT LEFT_PARENTHESIS INTEGER COMA INTEGER RIGHT_PARENTHESIS {$3,$5}
+	INTEGER COMA INTEGER {$1,$3}
+	| INTEGER COMA WORD {$1,(get_int_value !symbol_table $3)}
+	| WORD COMA INTEGER {(get_int_value !symbol_table $1),$3}
+	| WORD COMA WORD {(get_int_value !symbol_table $1),(get_int_value !symbol_table $3)}
 ;
 
 text_options:

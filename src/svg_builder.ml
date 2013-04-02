@@ -30,7 +30,7 @@ let rec get_dot_values symbol_table symbol_name =
 			(print_list position;
 			(hd position), (nth position 1));;
 
-(* Get radius value *)
+(* Get int value *)
 let rec get_int_value symbol_table symbol_name =
 	let dot_data = assoc symbol_name symbol_table in
 		let position = hd(tl(dot_data)) in
