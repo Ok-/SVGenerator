@@ -33,6 +33,10 @@ rule token = parse
 	| "radius"			{print_endline "RADIUS"; RADIUS}
 	| "integer"			{print_endline "INTEGER_TYPE"; INTEGER_TYPE}
 	| ":="				{print_endline "ASSIGNMENT"; ASSIGNMENT}
+	| "+"				{print_endline "PLUS"; PLUS}
+	| "-"				{print_endline "MINUS"; MINUS}
+	| "*"				{print_endline "ASTERISK"; ASTERISK}
+	| "/"				{print_endline "SLASH"; SLASH}
 	| "draw"			{print_endline "DRAW"; DRAW}
 	
 	| "{"				{print_endline "BEGIN"; BEGIN_BLOCK}

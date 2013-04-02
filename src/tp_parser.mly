@@ -33,6 +33,11 @@
 %token STROKE
 %token DRAW
 
+%token PLUS
+%token MINUS
+%token ASTERISK
+%token SLASH
+
 %token SEMICOLON
 %token COMA
 %token QUOTE
@@ -95,21 +100,28 @@ endline_comment:
 	| NEW_LINE {""}
 ;
 
+operation:
+	INTEGER PLUS operation {int_of_string($1) + $3}
+	| INTEGER MINUS operation {int_of_string($1) - $3}
+	| INTEGER ASTERISK operation {int_of_string($1) * $3}
+	| INTEGER SLASH operation {int_of_string($1) / $3}
+	| WORD PLUS operation {int_of_string(get_int_value !symbol_table $1) + $3}
+	| WORD MINUS operation {int_of_string(get_int_value !symbol_table $1) - $3}
+	| WORD ASTERISK operation {int_of_string(get_int_value !symbol_table $1) * $3}
+	| WORD SLASH operation {int_of_string(get_int_value !symbol_table $1) / $3}
+	| INTEGER {int_of_string($1)}
+	| WORD {int_of_string(get_int_value !symbol_table $1)}
+;
+
 declaration:
-	INTEGER_TYPE WORD ASSIGNMENT INTEGER {
-		symbol_table := (add_symbol !symbol_table $2 "integer" [$4] ("black","black"));
+	INTEGER_TYPE WORD ASSIGNMENT operation {
+		symbol_table := (add_symbol !symbol_table $2 "integer" [string_of_int($4)] ("",""));
 		[]
-	}
-	
-	| INTEGER_TYPE WORD ASSIGNMENT WORD {
-		let i = (get_int_value !symbol_table $4) in
-			symbol_table := (add_symbol !symbol_table $2 "integer" [i] ("black","black"));
-			[]
 	}
 
 	| DOT WORD ASSIGNMENT LEFT_PARENTHESIS dot RIGHT_PARENTHESIS {
 		let (x,y) = $5 in
-			symbol_table := (add_symbol !symbol_table $2 "dot" [x;y] ("black","black"));
+			symbol_table := (add_symbol !symbol_table $2 "dot" [x;y] ("",""));
 			[]
 	}
 
