@@ -1,7 +1,11 @@
 image "Wonderful world" (500, 300) {
 	description ("And I think to myself, What a wonderful world!");
 	dot center := (150,150);
+	dot line1 := (0,0);
+	dot line2 := (300,300);
 	integer r := 50;
-	circle truc := (center, r, fill(orange), stroke(red));
-	draw truc;
+	circle c1 := (center, r, fill(orange), stroke(red));
+	line l1 := (line1, line2, fill(grey), stroke(green));
+	draw c1;
+	draw l1;
 }

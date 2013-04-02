@@ -101,28 +101,38 @@ endline_comment:
 ;
 
 declaration:
-	CIRCLE WORD ASSIGNMENT LEFT_PARENTHESIS circle_data RIGHT_PARENTHESIS {
+	INTEGER_TYPE WORD ASSIGNMENT INTEGER {
+		symbol_table := (add_symbol !symbol_table $2 "integer" [$4]);
+		[]
+	}
+
+	| DOT WORD ASSIGNMENT LEFT_PARENTHESIS INTEGER COMA INTEGER RIGHT_PARENTHESIS {
+		symbol_table := (add_symbol !symbol_table $2 "dot" [$5;$7]);
+		[]
+	}
+
+	| CIRCLE WORD ASSIGNMENT LEFT_PARENTHESIS circle_data RIGHT_PARENTHESIS {
 		let (data_dot, r, data_circle) = $5 in
 		let (cx, cy) = data_dot and (fill, stroke) = data_circle in
 			symbol_table := add_symbol !symbol_table $2 "circle" [cx;cy;r];
 			[]
 	}
 	
-	| INTEGER_TYPE WORD ASSIGNMENT INTEGER {
-		symbol_table := (add_symbol !symbol_table $2 "integer" [$4]);
-		[]
-	}
-	
-	| DOT WORD ASSIGNMENT LEFT_PARENTHESIS INTEGER COMA INTEGER RIGHT_PARENTHESIS {
-		symbol_table := (add_symbol !symbol_table $2 "dot" [$5;$7]);
-		[]
+	| LINE WORD ASSIGNMENT LEFT_PARENTHESIS line_data RIGHT_PARENTHESIS {
+		let (data_dot_one, data_dot_two, data_circle) = $5 in
+		let (cx_one, cy_one) = data_dot_one
+		and (cx_two, cy_two) = data_dot_two
+		and (fill, stroke) = data_circle in
+			symbol_table := add_symbol !symbol_table $2 "line" [cx_one;cy_one;cx_two;cy_two];
+			[]
 	}
 	
 	| DRAW WORD {
 		let element = assoc $2 !symbol_table in
 			let symbol_type = hd(hd(element)) and symbol_data = hd(tl(element)) in
 				match symbol_type with
-				| "circle" -> (add_circle empty_list symbol_data "" "")
+				| "circle"		-> (add_circle empty_list symbol_data "" "")
+				| "line" 		-> (add_line empty_list symbol_data "" "")
 				| _ -> (print_endline "Nothing to draw."; [])
 				
 	}
@@ -145,8 +155,17 @@ dots_list:
 	| COMA dot COMA color {[$2], $4}
 
 line_data:
-	dot COMA dot COMA color {$1, $3, $5}
-	| dot COMA dot {$1, $3, ("", "")}
+	WORD COMA WORD COMA color {
+		let position_one = get_dot_values !symbol_table $1 
+		and position_two = get_dot_values !symbol_table $3 in
+			position_one, position_two, $5
+	}
+	
+	| WORD COMA WORD {
+		let position_one = get_dot_values !symbol_table $1 
+		and position_two = get_dot_values !symbol_table $3 in
+			position_one, position_two, ("", "")
+	}
 ;
 
 circle_data:

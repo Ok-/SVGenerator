@@ -71,12 +71,12 @@ let rec add_description document description =
 
 (* Build police attribute for color *)
 let rec build_fill_attribute fill_color =
-	if fill_color = "" then ""
+	if fill_color = "" then "fill=\"black\" "
 	else "fill=\"" ^ fill_color ^ "\" ";;
 
 (* Build police attribute for color *)
 let rec build_stroke_attribute stroke_color =
-	if stroke_color = "" then ""
+	if stroke_color = "" then "stroke=\"black\" "
 	else "stroke=\"" ^ stroke_color ^ "\" ";;
 
 (* Add a circle node to document *)
@@ -99,7 +99,11 @@ let rec add_rectangle document x_one y_one x_two y_two fill stroke =
 			add_node document node;;
 
 (* Add a line node to document *)
-let rec add_line document x_one y_one x_two y_two fill stroke =
+let rec add_line document line_data fill stroke =
+	let x_one = (hd line_data)
+	and y_one = (nth line_data 1)
+	and x_two = (nth line_data 2)
+	and y_two = (nth line_data 3) in
 	let node = "  <line x1=\"" ^ x_one ^ "\" y1=\"" ^ y_one ^ "\" x2=\"" ^ x_two ^ "\" y2=\"" ^ y_two ^ "\" "
 	^ build_fill_attribute(fill)
 	^ build_stroke_attribute(stroke)
