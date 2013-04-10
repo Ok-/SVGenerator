@@ -45,6 +45,10 @@ rule token = parse
 	|  "else"			{print_endline "ELSE"; ELSE}
 	|  "="				{print_endline "EQUAL"; EQUAL}
 	|  "<>"				{print_endline "DIFFERENT"; DIFFERENT}
+	|  ">"				{print_endline "GT"; GT}
+	|  ">="				{print_endline "GTE"; GTE}
+	|  "<"				{print_endline "LT"; LT}
+	|  "<="				{print_endline "LTE"; LTE}
 	|  "or"				{print_endline "OR"; OR}
 	|  "and"			{print_endline "AND"; AND}
 	|  "not"			{print_endline "NOT"; NOT}
@@ -63,8 +67,8 @@ rule token = parse
 	
 	| void				{token lexbuf}
 	| endline			{line:=!line + 1; print_endline "NEW_LINE"; NEW_LINE}
-  	| word as lxm 		{WORD(lxm)}
-  	| integer as lxi 	{print_endline("nombre : "^lxi);INTEGER(lxi)}
+  	| word as lxm 		{print_endline("word : " ^ lxm);WORD(lxm)}
+  	| integer as lxi 	{print_endline("integer : " ^ lxi);INTEGER(lxi)}
 	| _ as err 			{invalid_token := err; syntax_error lexbuf}
 	
 	| eof 				{print_endline "End of file"; EOF}

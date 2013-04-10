@@ -45,6 +45,10 @@
 
 %token EQUAL
 %token DIFFERENT
+%token GT
+%token GTE
+%token LT
+%token LTE
 %token OR
 %token AND
 %token NOT
@@ -134,7 +138,15 @@ boolean_expression:
 	| LEFT_PARENTHESIS FALSE RIGHT_PARENTHESIS { false }
 	| TRUE { true }
 	| FALSE { false }
+	| LEFT_PARENTHESIS operation GT operation RIGHT_PARENTHESIS {$2 > $4}
+	| LEFT_PARENTHESIS operation GTE operation RIGHT_PARENTHESIS {$2 >= $4}
+	| LEFT_PARENTHESIS operation LT operation RIGHT_PARENTHESIS {$2 < $4}
+	| LEFT_PARENTHESIS operation LTE operation RIGHT_PARENTHESIS {$2 <= $4}
+	| LEFT_PARENTHESIS operation EQUAL operation RIGHT_PARENTHESIS {$2 = $4}
+	| LEFT_PARENTHESIS operation DIFFERENT operation RIGHT_PARENTHESIS {$2 <> $4}
 ;
+
+
 
 endline_comment:
 	| ENDLINE_COMMENT {$1}
