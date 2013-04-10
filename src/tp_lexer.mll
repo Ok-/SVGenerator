@@ -32,13 +32,27 @@ rule token = parse
 	| "polygon"			{print_endline "POLYGON"; POLYGON}
 	| "radius"			{print_endline "RADIUS"; RADIUS}
 	| "integer"			{print_endline "INTEGER_TYPE"; INTEGER_TYPE}
+	
 	| ":="				{print_endline "ASSIGNMENT"; ASSIGNMENT}
+	| "draw"			{print_endline "DRAW"; DRAW}
+	
 	| "+"				{print_endline "PLUS"; PLUS}
 	| "-"				{print_endline "MINUS"; MINUS}
 	| "*"				{print_endline "ASTERISK"; ASTERISK}
 	| "/"				{print_endline "SLASH"; SLASH}
-	| "draw"			{print_endline "DRAW"; DRAW}
 	
+	|  "if"				{print_endline "IF"; IF}
+	|  "else"			{print_endline "ELSE"; ELSE}
+	|  "="				{print_endline "EQUAL"; EQUAL}
+	|  "<>"				{print_endline "DIFFERENT"; DIFFERENT}
+	|  "or"				{print_endline "OR"; OR}
+	|  "and"			{print_endline "AND"; AND}
+	|  "not"			{print_endline "NOT"; NOT}
+	|  "True"			{print_endline "TRUE"; TRUE}
+	|  "False"			{print_endline "FALSE"; FALSE}
+	
+	| "["				{print_endline "BEGIN_CONDITION"; BEGIN_CONDITION}
+	| "]"				{print_endline "END_CONDITION"; END_CONDITION}
 	| "{"				{print_endline "BEGIN"; BEGIN_BLOCK}
 	| "}"				{print_endline "END"; token lexbuf}
 	| "("				{print_endline "LEFT"; LEFT_PARENTHESIS}

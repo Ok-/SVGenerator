@@ -38,6 +38,19 @@
 %token ASTERISK
 %token SLASH
 
+%token IF
+%token ELSE
+%token BEGIN_CONDITION
+%token END_CONDITION
+
+%token EQUAL
+%token DIFFERENT
+%token OR
+%token AND
+%token NOT
+%token TRUE
+%token FALSE
+
 %token SEMICOLON
 %token COMA
 %token QUOTE
@@ -88,11 +101,39 @@ content:
 	}
 	
 	| declaration SEMICOLON endline_comment content {
-		let lst = ([add_endline_comment($3)] :: $1) in
+		let lst = [add_endline_comment($3)] in
 			if lst <> [] then
-				lst @ $4
-			else $4
+				let lst_xml = (lst :: $1) in
+					lst_xml @ $4
+			else $1 @ $4
 	}
+	
+	| IF boolean_expression BEGIN_CONDITION NEW_LINE content END_CONDITION ELSE BEGIN_CONDITION NEW_LINE content END_CONDITION SEMICOLON NEW_LINE {
+		if ($2) then $5
+		else $10
+	}
+	
+	| IF boolean_expression BEGIN_CONDITION NEW_LINE content END_CONDITION ELSE BEGIN_CONDITION NEW_LINE content END_CONDITION SEMICOLON NEW_LINE content {
+		if ($2) then $5 @ $14
+		else $10 @ $14
+	}
+	
+	| IF boolean_expression BEGIN_CONDITION NEW_LINE content  END_CONDITION SEMICOLON NEW_LINE content {
+		if ($2) then $5 @ $9
+		else []
+	}
+;
+
+boolean_expression:
+	LEFT_PARENTHESIS boolean_expression EQUAL boolean_expression RIGHT_PARENTHESIS {$2 = $4}
+	| LEFT_PARENTHESIS boolean_expression DIFFERENT boolean_expression RIGHT_PARENTHESIS {$2 <> $4}
+	| LEFT_PARENTHESIS boolean_expression OR boolean_expression RIGHT_PARENTHESIS {$2 || $4}
+	| LEFT_PARENTHESIS boolean_expression AND boolean_expression RIGHT_PARENTHESIS {$2 && $4}
+	| LEFT_PARENTHESIS NOT boolean_expression RIGHT_PARENTHESIS {not $3}
+	| LEFT_PARENTHESIS TRUE RIGHT_PARENTHESIS { true }
+	| LEFT_PARENTHESIS FALSE RIGHT_PARENTHESIS { false }
+	| TRUE { true }
+	| FALSE { false }
 ;
 
 endline_comment:

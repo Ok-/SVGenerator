@@ -25,6 +25,23 @@ image "Wonderful world" (500, 300) {
 	text t1 := ("Test", d5, t, fill(purple), stroke(pink));
 	polygon p1 := (d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, fill(gold));
 	circle c2 := (center, r2, fill(yellow));
+	if ( True and True ) [
+		dot d16 := (500,300);
+		dot d17 := (200,0);
+		line l2 := (d16, d17, fill(blue), stroke(blue));
+		draw l2;
+	] else [
+		dot d16 := (500,300);
+		dot d17 := (200,0);
+		line l2 := (d16, d17, fill(yellow), stroke(yellow));
+		draw l2;
+	];
+	if ( False or True ) [
+		dot d16 := (200,300);
+		dot d17 := (500,0);
+		line l2 := (d16, d17, fill(red), stroke(red));
+		draw l2;
+	];
 	draw l1;
 	draw c1;
 	draw r1;
