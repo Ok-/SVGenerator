@@ -12,8 +12,16 @@
 \usepackage{placeins}	% Pour utiliser \FloatBarrier qui annule les flottants
 \usepackage{listings}	
 \usepackage{hyperref}
+\usepackage{color}
 
+\definecolor{light-gray}{gray}{0.95}
 
+\lstset{language=Caml,
+		keywordstyle=\color{blue},
+		backgroundcolor=\color{light-gray},  
+  		showspaces=false,
+  		showstringspaces=false,
+  		showtabs=false}
 \graphicspath{{img/}{../}}	% Définir l'emplacement des images
 
 \makeatletter

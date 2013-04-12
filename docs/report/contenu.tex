@@ -8,25 +8,75 @@
 \chapter{Analyse du sujet}
 
 	\section{Premières idées}
-	Syntaxe
+	%Syntaxe
+		Dans un premier temps, nous avons défini un plan de route pour la réalisation de ce projet. Dans un premier temps, nous avons souhaité réaliser un langage simple permettant l'affichage d'une image contenant des formes basiques et, si possibles, complexes sans s'encombrer d'affectations de variables. Dans le cas où nous arriverions dans les temps à ce résultat, nous avons prévu de revoir notre langage pour intégrer des variables et les affectations nécessaires, ainsi que les boucles, les conditionnelles et les fonction ou méthode si le temps nous le permettait. \\
+		
+		Ensuite, nous avons défini le langage et sa syntaxe afin de partir sur les bases les plus concrètes possibles. Pour cela, nous nous sommes inspirés du langage présenté dans le sujet de ce projet puisque celui-ci est simple, facilement lisible et compréhensible par un humain et évolutif. En effet, cette dernière caractéristique est essentielle dans un projet de ce genre puisque nous ne connaissons pas vraiment les difficultés que nous allons rencontrer et la vitesse à laquelle nous allons avancer. Nous avons fixé les mots-clés du langage ainsi que les tokens qui seront traités par le programme afin de transformer le langage source en un langage cible.
 	
 	\section{Mise en place de l'architecture}
-	Structure de données utilisée pour stocker le xml 
-	Construction du xml
+	%Structure de données utilisée pour stocker le xml
+		\subsection{Définition de la structure de données utilisée}
+		Une fois le langage défini, nous avons chercher la structure de données la plus efficace pour stocker le code produit. Dans un premier temps, nous avions pensé à un arbre puisque la structure même du format SVG est basée sur le XML qui est composé d'une balise principale (tronc), de nœuds (ou branches) et de feuilles. Cependant, la maigre expérience avec les arbres en Ocaml nous a conduit à trouver une structure plus simple à travailler (parcours, ajouts, fusion, \dots). \\
+		
+		Notre choix s'est porté sur les listes puisque celles-ci ont l'avantage d'avoir un module très bien conçu et dont nous connaissons bien le fonctionnement puisque nous l'avons étudié l'année dernière en \emph{Paradigmes de programmation} avec M. Thoraval en 3\ieme{} année de Licence à l'Université de Nantes. \\
+		
+		Cette structure est composée de chaînes de caractères imbriquées  dans des listes de listes puisque nous avons un arbre XML d'une profondeur bien définie. En effet, si l'on considère la racine de l'arbre comme étant de rang 0, la profondeur maximale sera 1 puisque toutes les formes dans le format SVG sont contenues dans la balise racine. Grâce au typage du langage Ocaml, cette structure ne peut fonctionner que si nous avons un arbre d'une profondeur, ce qui est le cas ici.
+	 
+	%Construction du xml
+		\subsection{Construction du document de sortie}
+		Pour construire le xml, nous allons appeler à chaque instruction une fonction qui va ajouter dans la structure une liste contenant une chaine de caractères correspondant au code SVG de la forme souhaitée, ou si besoin au commentaire (de la même forme qu'en xml). A l'initialisation de la structure, nous ajoutons par défaut le code \texttt{<?xml version="1.0" encoding="utf-8"?>} qui permet de définir proprement le contenu XML du document.\\
+		
+		L'une des caractéristiques de l'emploi des liste est que l'ajout d'un élément se fait toujours au début, ce qui a pour conséquence de nécessiter une action d'inversion de l'ordre afin d'obtenir un document bien formé à la fin. Il était possible de faire autrement en définissant une fonction qui ajoute toujours à la fin mais cela nous a paru plus pratique de ne faire qu'un seul traitement pour réorganiser la liste plutôt que de le faire autant de fois qu'il y a d'insertions.\\
 	
-	%TODO : parler de la génération qui se faisait à l'envers
-	
+		A la fin de la génération, nous ajoutons simplement la balise de fin \texttt{</svg>} puis nous procédons à l'inversion de la liste pour rendre le code prêt à l'emploi. 
 	
 \chapter{Développement du compilateur}
 	
 	\section{Partie 1 : La grammaire de base}
+		La première partie de notre travail a consisté à créer un langage doté d'instructions simples. 	La première version du logiciel développée permettant de générer de manière classique une images SVG contenant des formes basiques (cercles, lignes, \dots) et des formes plus complexes (polygones). Dans la suite, nous allons expliquer comment nous l'avons réalisé et nous décrirons les obstacles que nous avons rencontrés et les moyens mis en œuvre pour les surmonter.
 
 		\subsection{Construction de l'image}
+			La première étape dans la construction de notre langage a été la reconnaissance des mots-clés minimaux afin de produire une image avec une taille définie dans le fichier source. Nous avons essayé de construire code xml valide et basique qui décrit une image vide. Pour cela, nous avons défini les mots-clés et tokens puis nous avons défini les règles du lexer et du parser. Pour cela, nous avons mis en place une règle ne reconnaissant que le code suivant : 
+\begin{lstlisting}[morekeywords={image}]
+image nom 100,100 {
 
+}
+\end{lstlisting}
+		
+		Pour cela, nous avons définis une règle extrêmement simple : 
+		
+\begin{lstlisting}[morekeywords={IMAGE,WORD,INTEGER,COMA,BEGIN_BLOCK,END_BLOCK,EOF}]
+IMAGE WORD INTEGER COMA INTEGER BEGIN_BLOCK END_BLOCK EOF
+\end{lstlisting}
+		
+		Pour rappel, dans la première partie de ce rapport nous avons défini le tokens \emph{WORD} comme étant une chaîne commençant par une lettre et suivie par un nombre infini de chiffres et lettres tandis que \emph{INTEGER} est une chaîne uniquement composée de chiffres.\\
+		
+		Le premier problème rencontré a été la gestion du saut de ligne qui provoquait une erreur de parcours du fichier. La réponse finalement la plus adaptée pour traiter cet élément nous a été donnée par Gwendal et Robin et a nécessité de déclarer un token \emph{NEW\_LINE} uniquement composé du caractère \emph{\\n} afin de pouvoir facilement traiter le caractère suivant. Nous allons voir plus tard que la gestion des sauts ligne de cette manière a provoqué d'autres problèmes par la suite. \\
+		
+		Une fois la structure mise en place et le code xml affiché à l'écran dans l'ordre inverse (les ajouts dans les listes se faisant au début), nous avons simplement utilisé les fonctions dans le module \emph{List} pour remettre les chaînes dans l'ordre puis nous avons stocké le résultat dans un fichier. A ce moment-là, la partie la plus difficile a été réalisée et nous avons rencontré moins de problèmes dans la suite de cette première version.
+		
+		% TODO : Parler du traitement des chaînes de caractère pour la description
+		
 		\subsection{Reconnaissance des formes basiques}
+		La première forme que nous avons implémentée est le cercle puisque nous avons considéré qu'il s'agissait selon nous de la forme la plus simple puisqu'elle ne nécessite que la définition d'un seul point pour le centre et d'un entier pour le rayon. Cependant, pour reconnaître le point, nous avons dû définir une règle qui est composée du mot-clé \emph{dot} et de deux entier qui correspondent respectivement à l'emplacement sur l'axe des abscisses et l'axe des ordonnées à partir du coin en haut à gauche de l'image et une autre pour la définition du rayon. Voici ce que donne la déclaration de ce cercle :
+\begin{lstlisting}[morekeywords={circle, dot, radius}]
+circle (dot(150,150), radius(50));
+\end{lstlisting}
+
+		De cette manière, le lexer produit des entiers à partir des nombres obtenus puis les transmet au parser qui va pouvoir appliquer un traitement dessus. Ici, nous appelons une fonction de svg\_builder.ml qui va retourner le code xml correspondant à ce cercle dans une chaîne de caractères. La chaîne est ensuite ajoutée dans la structure du document XML.\\
+
+		Cette partie ne nous a pas été très difficile à mettre en œuvre, nous avons réalisé cette partie assez facilement. Nous avons pu faire de même pour les autres formes géométriques basiques telles que le rectangle, la ligne et le texte.
+
+\begin{lstlisting}[morekeywords={line, dot, rectangle, text}]
+line (dot(0,0), dot(300,300));
+rectangle (dot(50,50), dot(100,100)); 
+text ("Texte present sur l'image", dot(200,70));
+\end{lstlisting}
+
+		Une fois ces éléments ajoutés, nous avons travaillé sur les attributs optionnels qui permettent notamment de les afficher en couleur.
 
 		\subsection{Ajout des attributs optionnels}
-		% couleurs des formes, taille du texte, police d'écriture, etc...
+		% couleurs des formes, taille du texte, etc...
 	
 		\subsection{Commentaires de fin de ligne}
 	

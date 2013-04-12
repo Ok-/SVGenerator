@@ -3,6 +3,7 @@
 +-----------+
 
 	- Variable assignment for all shapes [In progress]
-	- Loop / condition
+	- Conditions with "{" instead of "[" to define blocks
+	- Loop
 
 See : http://www.w3.org/TR/SVG11/
