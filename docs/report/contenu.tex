@@ -24,11 +24,20 @@
 	 
 	%Construction du xml
 		\subsection{Construction du document de sortie}
+		
+			\subsubsection{La génération du code XML}
 		Pour construire le xml, nous allons appeler à chaque instruction une fonction qui va ajouter dans la structure une liste contenant une chaine de caractères correspondant au code SVG de la forme souhaitée, ou si besoin au commentaire (de la même forme qu'en xml). A l'initialisation de la structure, nous ajoutons par défaut le code \texttt{<?xml version="1.0" encoding="utf-8"?>} qui permet de définir proprement le contenu XML du document.\\
 		
 		L'une des caractéristiques de l'emploi des liste est que l'ajout d'un élément se fait toujours au début, ce qui a pour conséquence de nécessiter une action d'inversion de l'ordre afin d'obtenir un document bien formé à la fin. Il était possible de faire autrement en définissant une fonction qui ajoute toujours à la fin mais cela nous a paru plus pratique de ne faire qu'un seul traitement pour réorganiser la liste plutôt que de le faire autant de fois qu'il y a d'insertions.\\
 	
 		A la fin de la génération, nous ajoutons simplement la balise de fin \texttt{</svg>} puis nous procédons à l'inversion de la liste pour rendre le code prêt à l'emploi. 
+	
+			
+			\subsubsection{Le module \emph{Svg\_builder}}
+			Nous avons créé un module \emph{Svg\_builder} pour s'occuper de la transformation des chaînes de caractères contenant l'information sur les formes de l'image en code XML. Pour cela, nous avons programmé un grand nombre de fonctions ayant pour but de préparer les strings dans lequel était contenu le xml. Lorsque cela était possible, nous avons essayé de rendre ces fonctions récursives pour profiter au maximum des avantages du langage XML mais parfois cela n'a pas été possible et nous avons dû utiliser des suites d'instructions, comme dans un langage impératif.\\
+			
+			La plupart des fonctions de ce module ont pour objectif la création d'une forme en SVG, la gestion des attributs optionnels (et donc gérer leur absence aussi bien que leur présence) ou encore l'écriture dans un fichier mais nous avons aussi développé quelques fonctions de débogage pour afficher à l'écran le contenu des listes manipulées ou encore le code XML produit.
+		
 	
 \chapter{Développement du compilateur}
 	
@@ -77,21 +86,151 @@ text ("Texte present sur l'image", dot(200,70));
 
 		\subsection{Ajout des attributs optionnels}
 		% couleurs des formes, taille du texte, etc...
+		Les premiers attributs que nous avons ajoutés sont ceux correspondant à la couleur. Pour cela, nous avons permis dans le langage de rajouter les champs fill et stroke lors de la création des objets. Ensuite lors de l'applications des règles, nous détectons la présence ou non de ces champs pour permettre lors de la création du code XML d'appeler des fonctions qui ajouterons ou non les attributs en fonction du contenu d'une chaîne de caractères. Si celle ci est vide, nous n'allons pas rajouter le champs et par défaut les interpréteur de SVG comme Firefox par exemple définirons en noir les objets.\\
+		
+		Dans la première partie du programme, nous avons aussi permis la gestion de la taille du texte et le choix de la police d'écriture pour l'élément \emph{text}. Cependant, ce dernier élément a été enlevé par la suite car cela provoquait parfois des erreurs.
 	
 		\subsection{Commentaires de fin de ligne}
+		Une des parties qui nous a le plus ralenti concerne la gestion des commentaires de fin de ligne. En effet, pour réussir cela, il a fallu reconnnaitre le symbole \emph{\\} à la fin d'un certain nombre de règles comme la description ou les instructions. Ensuite, il a fallu récupérer tous les mots suivants jusqu'au caractère de fin de ligne pour les stocker dans une liste.\\
+		
+		La difficulté que nous avons rencontré concernait la détection de ce caractère de fin de ligne qui provoquait une erreur de syntaxe lors de la fin de fichier. Pour résoudre cela, nous avons changé les règles associées au token \og \emph{\{} \fg ~ pour prendre au compte le symbole de fin de fichier. Nous avons voir dans la suite que cette modification va entraîner d'autres soucis.
 	
 		\subsection{Reconnaissance des formes complexes}
-	
+		Une fois les symboles les plus simples gérés, nous avons voulu intégrer à notre langage la gestion des formes complexes comme le polygone fermé. Cette forme est constituée d'un nombre indéterminé de points, et le dernier points déclaré fermera la figure en se joignant avec le premier point. Nous avons dû dans les règles permettre de reconnaitre un nombre infini de déclarations de points mais pour nous avons fait en sorte que le nombre de points minimums soit fixé arbitrairement à deux sinon la figure n'apparaissait pas sur l'image finale.\\
+		
+		Nous avons aussi jeté un coup d'œil au la réalisation de courbes mais bien que ce ne soit pas extrêmement difficile, nous avons préféré passer à une deuxième version de notre logiciel afin de prendre en compte les déclarations de variables et les instructions.
 	\section{Partie 2 : Les instructions programmables}
 
-		\subsection{Définition de variables et affectation}
-		
+		\subsection{Changements induits par rapport à la première version}
+			\subsubsection{La table des symboles}
+			Pour gérer les variables et les instructions, il est absoluement nécessaire de pouvoir gérer les objets déclarés et les valeurs affectées dans une \emph{tables des symboles}. En compilation, une table des symboles est une liste des informations relatives aux données déclarée dans le programme que l'on est en train de compiler. Ici, les informations dont nous avons besoin sont le nom, le type, les différents paramètres obligatoires comme le rayon, le centre, \dots mais aussi les paramètres optionnels qui ont été déclarés. De cette manière, il est possible de pouvoir déclarer un objet en début de programme mais de lui affecter des valeurs plus tard, ou même de redéfinir les informations relatives à un symbole, par exemple dans le cas d'une boucle. \\
+			
+			Pour représenter cette table en mémoire, nous avons envisagé plusieurs solutions. Le première et la plus évidente est la manipulation d'une matrice de strings mais nous nous sommes heurtés à la difficulté de gérer des pointeurs pour manipuler la matrice. Après cet échec, nous avons cherché une méthode plus simple pour manipuler des données et nous nous somme intéressés aux tableaux (Array) mais là aussi sans succès puisque cela provoquait des erreurs difficiles à corriger à notre niveau. \\
+			
+			Après cela, nous avons décidé de nous baser sur ce que nous connaissions le mieux : les listes. En effet, il est possible d'émuler le fonctionnement d'une matrice en utilisant des listes de listes. Il ne s'agit pas de la manière le plus élégante pour faire le travail mais cela a au moins pour avantage d'être simple à concevoir et à déboguer. De cette manière, nous avons construit une table des symboles facile à parcourir et à manipuler. \\
+			
+			Nous avons ajouté des différentes fonctions qui manipulent la table des objets dans le \emph{svg\_builder} mais il aurait été possible aussi d'en faire un nouveau module. Cependant, puisqu'il n'y avait pas énormément de méthodes pour gérer la table, nous avons simplifié la structure des fichiers en regroupant le code.
+			
+			\subsubsection{La déclaration des objets}
+			Par rapport à la première version du programme, nous avons pris la décision de ne permettre la création d'objets qu'à partir de déjà déclaré et instanciés. Pour expliciter cela, voici un exemple : lors de la création d'un cercle, il était possible dans la première version de définir des points et des entiers directement dans la déclaration du cercle, comme ceci :
+\begin{lstlisting}[morekeywords={circle, dot, radius}]
+circle (dot(150,150), radius(50));
+\end{lstlisting}
+
+			Pour limiter le nombre de règles qui gèrent la déclaration des formes, nous avons décidé d'obliger la déclaration des variables nécessaires à la construction de l'objet avant de manière à ce que les données utilisées soient déjà dans la table des objets. Il aurait été possible d'autoriser les deux formats de déclaration mais cela aurait multiplié le nombre de règle et gêné la lecture du code du parser. Il est tout de même envisageable dans une prochaine version d'autoriser les deux formats à la fois pour rendre le langage plus souple. \\
+			
+			Voici ce qui devra être déclaré dans la seconde version du logiciel afin d'afficher le même cercle : 
+	
+\begin{lstlisting}[morekeywords={circle, dot, integer, draw}]
+dot center := (150,150);
+integer radius := 50;
+circle c1 := (center, radius);
+draw c1;
+\end{lstlisting}
+			~\\
+			Le mot-clé \emph{draw} permet de valider l'ajout dans le code XML d'une forme telle qu'elle est décrite actuellement dans la table des objets. Cela signifie que si on modifie après cette instruction les valeurs d'un symbole, cela ne modifiera pas le code XML déjà écrit. Cependant, si une modification est effectuée sur un objet déjà dessiné et que l'on refait \emph{draw}, il sera possible de le dessiner à nouveau. C'est particulièrement utile, notamment dans le cadre des boucles où l'on pourrait faire varier d'un tour à l'autre les points ou les distances d'une forme géométrique.
+
+		\subsection{Définition de variables et affectations}
+			\subsubsection{Stockage des variables dans la table des symboles}
+				La première étape dans la mise en place des varaibles a été la reconnaissance et le découpage des mots qui déclarent une variable. En effet, lorsque les mots clés qui définissent les types sont détectés, le parseur va attendre dans la suite un nom de variable pour construire dans la table l'entrée correspondante. Il va créer une sorte de map avec le nom de la variable pour clé et une liste contenant 3 autres listes de strings : le nom de la variable, les objets qui définissent sa position (exemple : le rayon et le centre d'un cercle) et les couleurs déclarées pour un objet. \\
+				
+				Lorsqu'un symbole doit être ajouté à la table, nous vérifions s'il existe déjà en comparant les clés de la table (les noms de variables), et si effectivement une entrée est déjà présente, nous la supprimons et nous rajoutons sa dernière valeur pour la mettre à jour. Cela est plus pratique que tenter de modifier directement des données dans la table.
+			
+			\subsubsection{Gestion des affectations}
+			Dans une deuxière partie, nous avons géré la sauvegarde des valeurs assignées à une variable dans la table des symboles. Pour cela, on sauvegarde en plus du type et du nom de la variable les noms des objets qui permettent de constuire la forme courante. Nous avons préféré sauvegarder le nom du symbole plutôt que sa valeur afin de permettre la prise en compte plus tard de toute modification de sa valeur dans les objets qui sont composés par cet élément. Par exemple, si un cercle est composé par un rayon \emph{r} défini par un entier égal à 10, et qu'avant de dessiner le cercle nous changeons sa valeur à 15, nous n'avons pas à modifier le cercle pour prendre en compte ce changement. \\
+			
+			Une fois la table des objets construite, lorsque nous lisons le mot-clé \emph{draw}, nous cherchons dans la table des symboles les valeurs correspondant aux objets qui composent la forme. Ainsi, lors de la création du XML, nous allons chercher la valeur du cercle, qui va chercher la valeur du centre et du rayon, qui cherchera dans la table les valeurs entières qui correspondent.
+			
 		\subsection{Les opérations}
+			Après avoir implémenté les affectations, nous avons travaillé sur les opérations sur les variables. Nous n'avons considéré que les opérations de base : l'addition, la soustraction, la multiplication et la division mais il serait facilement possible d'ajouter de nouveaux opérateurs comme le modulo, la puissance, \dots \\
 
-		\subsection{Les boucles}
+			Ces opérateurs peuvent être appliqués sur plusieurs types de données : soit des variables contenues dans la table des symboles, soit directement sur des constantes. Les opérations peuvent aussi être combinées mais nous n'avons pas encore implémenté l'ordre des opérateurs (par exemple la multiplication avant la division).
 
+		\subsection{Les conditionnelles}
+			Avant de pouvoir implémenter la gestion des boucles, qui possèdent des conditions de sortie pour ne pas durer indéfiniment, nous avons d'abord préparé la gestion des conditions, et plus particulièrement le traitement nécessaire sur une expression booléenne pour activer ou non un bloc d'instructions. \\
+			
+			Dans un premier temps, nous avons défini les opérateurs impliqués dans les expressions booléennes :
+			\begin{itemize}
+				\item Les inégalités sur les nombres avec $>$, $>=$, $<$ et $<=$;
+				\item L'égalité et la différence avec $=$ et $<>$;
+				\item Les opérateurs booléens \emph{and} et \emph{or}. \\
+			\end{itemize}
+						
+			De plus, nous avons défini les booléens \emph{True} et \emph{False} pour compléter les éléments déjà à disposition.\\
+			
+			Nous avons défini aussi la possibilité de se servir de ces expressions pour gérer des blocs conditionnés (si alors sinon). Cependant, comme expliqué précédemment, nous avons quelques problèmes pour gérer les blocs définis avec $\{$ et $\}$ donc nous dû prendre d'autres délimiteurs qui n'avaient pas encore été utilisés : $[$ et $]$. Cependant, cette syntaxe n'étant pas aussi naturelle qu'avec des accolades, nous souhaiterions trouver pour une prochaine version un moyen de se passer de ces crochets assez disgracieux.
+			
+
+		\subsection{Les limites du langage}
+			Dans cette section, nous allons détailler les problèmes qui restent toujours à résoudre et les limitations connues de notre logiciel.
+			
+			\subsubsection{Les boucles}
+			Malheureusement, nous n'avons pas eu le temps d'implémenter les boucles mais nous restons convaincus que la majorité du travail a été effectuée et qu'il ne manque pas grand chose pour obtenir le résultat escompté. En effet, les conditions et les réaffectations de valeurs aux symboles sont fonctionnelles, nous pourrons toujours continuer nos recherches dans une future version de SVGenerator.
+			
+			\subsubsection{Les procédures et les fonctions}
+			Nous n'avons pas eu le temps non plus de gérer les procédures et les fonctions même si cela aurait représenté un travail intéressant. Il aurait fallu gérer la portée des variables (qui sont globales dans la version actuelle) et donc une pile et un tas comme dans la majorité des vrais langages pour la transmission et l'utilisation de variables locales. 
+			
+			\subsubsection{La gestion des blocs d'instructions}
+			Un des problèmes actuels auquel nous sommes encore confrontés est la gestion des blocs d'instructions qui ne fonctionne pas comme nous l'aurions souhaité. En effet, le bloc d'instructions délimité par les symboles $\{$ et $\}$ posent quelques problèmes, nous avons dû utiliser les symboles $[$ et $]$ à contrecœur. De plus, si les boucles et les procédures doivent être implémentés, il serait plus pratique de gérer plus efficacement les blocs d'instructions.
+			
+			\subsubsection{Les nombres flottants}
+			Au début du projet, nous avons commencé par définir les entiers comme seuls nombres utilisables par soucis de simplicité mais maintenant que nous sommes plus à l'aise avec les outils et le langage, nous pouvons sans doute prévoir pour une version prochaine la gestion des nombres flottants, ce qui nécessitera de créer de nouvelles fonctions spécifiquement pour effectuer des calculs sur ces nombres. Cela nous permettrait aussi de rajouter des opérateurs de calcul comme le sinus ou le cosinus, l'exponentielle, \dots
+			
+			\subsubsection{L'ordre des opérations}
+			Si jamais un utilisateur veut effectuer une suite de calculs, il est probable que le résultat attendu ne soit pas le même que le résultat obtenu puisque dans l'état actuel des choses la priorité des opérations n'est pas respectée. Cependant, nous ne savons pas comment faire pour construire l'arbre des opérations en tenant compte de ces spécificités.
+			
+			% boucles, gestion des blocs d'instructions, procédures et fonctions, gestion des nombres flottants, ordre des opérateurs, etc
+		
 \chapter{Présentation du langage final}
+	\section{Première version}
+	Voici un exemple de ce qu'il est possible de faire avec la permière version du logiciel. Les attributs entre cochets sont facultatifs, ils servent notamment pour le couleur.
+	
+\begin{lstlisting}[morekeywords={circle, dot, radius, image, description, line, rectangle, text, polygon}]
+image "Example" (200, 200) {
+	/* La description est obligatoire */
+	description ("Exemple"); // Commentaire de fin de ligne
+	/* Definition des figures geometriques */
+	line (dot(0,0), dot(200,200)[, fill(color\_name), stroke(color\_name)]);
+	circle (dot(50,150), radius(50)[, fill(color\_name), stroke(color\_name)]);
+	rectangle (dot(50,50), dot(100,100)[, fill(color\_name), stroke(color\_name)]);
+	text ("Texte", dot(20,70)[, police, 40,
+		fill(color\_name), stroke(color\_name)]);
+	polygon (dot(60,80), dot(50,30)[, dot(100,90),...]
+		[,  fill(color\_name), stroke(color\_name)]);
+}
+\end{lstlisting}
+	
+	
+	\section{Seconde version}
+	Dans la seconde version, voici ce que donne le code pour produire la même image finale :
+\begin{lstlisting}[morekeywords={circle, dot, integer, image, description, line, rectangle, text, polygon}]
+image "Example" (200, 200) {
+	/* La description est obligatoire */
+	description ("Exemple"); // Commentaire de fin de ligne
+	/* Definition des figures geometriques */
+	dot d1 := (0,0);
+	dot d2 := (200,200);
+	line l1 := (d1, d2 [, fill(color\_name), stroke(color\_name)]);
+	dot d3 := (50,150);
+	integer r := 50;
+	circle c1 := (d3, radius(r)[, fill(color\_name), stroke(color\_name)]);
+	dot d4 := (50,50);
+	dot d5 := (100,100);
+	rectangle r1 := (d4, d5[, fill(color\_name), stroke(color\_name)]);
+	dot d6 := (20,70);
+	text t1 := ("Texte", [ 40, fill(color\_name), stroke(color\_name)]);
+	dot d6 := (60,80);
+	dot d7 := (50,30);
+	/* Sans le saut de ligne : */
+	polygon p1 :=
+		(d6, d7 [, d8,...] [,  fill(color\_name), stroke(color\_name)]);
+}
+\end{lstlisting}
+	
+Vous pourrez trouver avec les programmes quelques exemples qui illustrent bien les possibilités offertes par les deux versions.
 
 \chapter*{Conclusion}
-
-
+	Ce projet aura été l'occasion de mettre en application les connaissances étudiées durant le cours de Compilation. En effet, pendant ce projet, nous avons pu réaliser un compilateur spécifique au langage que nous avons créé, ce qui  implique la mise en place des règles lexicales, syntaxiques et sémantiques du nouveau langage. Nous avons aussi créé une table des symboles permettant la sauvegarde des objets créés dynamiquement pendant le parcours du fichier d'entrée.
+	Nous avons aussi pu approfondir notre connaissance du langage Ocaml que nous avions déjà utilisé l'année dernière mais aussi de lex et yacc que nous avions utilisé dans une matière précédente avec le langage C.
+	
+	De plus, même si nous avons réalisé la majeure partie des propositions données dans le sujet de ce TP, cela nous aura donné de bonnes idées pour améliorer encore le logiciel avec de nouvelles fonctionnalités (voir la section \emph{Les limites du langage}).

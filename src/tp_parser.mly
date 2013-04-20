@@ -71,7 +71,6 @@
 
 main:
 	def_image EOF {()}
-	| def_image NEW_LINE def_image EOF {()}
 ;
 
 def_image:

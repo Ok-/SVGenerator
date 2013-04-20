@@ -5,5 +5,5 @@
 	- Variable assignment for all shapes [In progress]
 	- Conditions with "{" instead of "[" to define blocks
 	- Loop
-
-See : http://www.w3.org/TR/SVG11/
+	- Functions
+	- Implements more SVG functions ( See : http://www.w3.org/TR/SVG11/ )

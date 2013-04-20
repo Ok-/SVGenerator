@@ -1,0 +1,33 @@
+image "icons" (300, 100) {
+	description ("Free icons!"); //Almost free, cool stuff just for $5!
+	integer five := 5;
+	integer fifty := five * 10;
+	integer x := fifty;
+	dot center1 := (x,fifty);
+	dot center2 := (150,fifty);
+	dot center3 := (250,fifty);
+	integer r := 50;
+	dot d1 := (35,30);
+	dot d2 := (35,70);
+	dot d3 := (75,50);
+	dot d4 := (130,30);
+	dot d5 := (145,70);
+	dot d6 := (155,30);
+	dot d7 := (170,70);
+	dot d8 := (230,30);
+	dot d9 := (270,70);
+	circle c1 := (center1, r, fill(forestgreen)); 
+	polygon p1 := (d1, d2, d3);
+	circle c2 := (center2, r, fill(orange));
+	rectangle r1 := (d4, d5);
+	rectangle r2 := (d6, d7);
+	circle c3 := (center3, r, fill(red));
+	rectangle r3 := (d8, d9);
+	draw c1;
+	draw p1;
+	draw c2;
+	draw r1;
+	draw r2;
+	draw c3;
+	draw r3;
+}
